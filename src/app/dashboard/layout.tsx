@@ -45,7 +45,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 						<div className="mb-4 flex items-center gap-2">
 							<span className="text-2xl">🎄</span>
 							<div className="relative">
-								<span className="text-lg text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200">
+								<span className="text-lg font-serif text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200">
 									Santa&apos;s Workshop
 								</span>
 								<Sparkles className="absolute -top-1 -right-4 w-3 h-3 text-amber-400 animate-pulse" />

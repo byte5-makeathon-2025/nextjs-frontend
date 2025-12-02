@@ -80,7 +80,7 @@ export default function Home() {
 								<span className="text-7xl">🎄</span>
 								<Sparkles className="absolute -top-2 -right-4 w-6 h-6 text-amber-400 animate-pulse" />
 							</div>
-							<h1 className="text-3xl text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 tracking-wide">
+							<h1 className="text-3xl text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 font-serif tracking-wide">
 								Christmas Wish
 							</h1>
 							<p className="text-slate-400 mt-3 text-sm font-light tracking-widest uppercase">
@@ -101,7 +101,7 @@ export default function Home() {
 								<div className="inline-flex items-center justify-center w-16 h-16 bg-emerald-900/30 border border-emerald-500/30 rounded-full mb-4">
 									<CheckCircle className="w-8 h-8 text-emerald-400" />
 								</div>
-								<h2 className="text-2xl text-amber-100 mb-2">
+								<h2 className="text-2xl text-amber-100 mb-2 font-serif">
 									Thank you!
 								</h2>
 								<p className="text-slate-400">

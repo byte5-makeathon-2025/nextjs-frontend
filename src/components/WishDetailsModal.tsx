@@ -92,7 +92,7 @@ export default function WishDetailsModal({
 				<div className="sticky top-0 bg-[#141e30] border-b border-slate-700/50 px-6 py-4 flex items-center justify-between">
 					<div className="flex items-center gap-3">
 						<span className="text-2xl">🎁</span>
-						<h2 className="text-xl text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200">
+						<h2 className="text-xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200">
 							Wish Details
 						</h2>
 					</div>
@@ -167,7 +167,7 @@ export default function WishDetailsModal({
 					) : (
 						<>
 							<div>
-								<h3 className="text-2xl text-amber-100 mb-3">
+								<h3 className="text-2xl font-serif text-amber-100 mb-3">
 									{wish.title}
 								</h3>
 								<p className="text-slate-400 whitespace-pre-wrap leading-relaxed">

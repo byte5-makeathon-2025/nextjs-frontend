@@ -155,7 +155,7 @@ export default function WishesPage() {
 		<div>
 			<div className="mb-8">
 				<div className="flex items-center gap-3 mb-2">
-					<h1 className="text-3xl text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200">
+					<h1 className="text-3xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200">
 						Christmas Wishes
 					</h1>
 					<span className="text-2xl">🎄</span>
