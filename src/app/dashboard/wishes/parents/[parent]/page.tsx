@@ -2,24 +2,12 @@
 
 import { useEffect, useState, DragEvent } from "react";
 import { api } from "@/lib/api";
-import type { Wish, Status } from "@/types";
-import { Clock, CheckCircle, XCircle, Loader } from "lucide-react";
+import type { Wish, Status, StatusWithParent } from "@/types";
+import { CheckCircle } from "lucide-react";
 import WishCard from "@/components/WishCard";
 import WishDetailsModal from "@/components/WishDetailsModal";
 
-export const dynamic = "force-dynamic";
-
 const statusConfig = {
-  pending: {
-    title: "Pending",
-    icon: Clock,
-    color: "bg-amber-50 text-amber-900 border-amber-200",
-  },
-  in_progress: {
-    title: "In Progress",
-    icon: Loader,
-    color: "bg-blue-50 text-blue-900 border-blue-200",
-  },
   paid: {
     title: "Paid",
     icon: CheckCircle,
@@ -29,11 +17,6 @@ const statusConfig = {
     title: "Granted",
     icon: CheckCircle,
     color: "bg-emerald-50 text-emerald-900 border-emerald-200",
-  },
-  denied: {
-    title: "Denied",
-    icon: XCircle,
-    color: "bg-slate-100 text-slate-900 border-slate-200",
   },
 };
 
@@ -165,8 +148,8 @@ export default function WishesPage() {
         <p className="text-slate-600">Manage and track all submitted wishes</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
-        {(Object.keys(statusConfig) as Status[]).map((status) => {
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5 max-w-3xl">
+        {(Object.keys(statusConfig) as StatusWithParent[]).map((status) => {
           const config = statusConfig[status];
           const statusWishes = getWishesByStatus(status);
           const Icon = config.icon;
