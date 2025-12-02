@@ -102,7 +102,7 @@ export const api = {
     },
 
     checkIfAllowed: async (wish: string): Promise<boolean> => {
-      return fetchApi<boolean>(`/wish/${wish})}`);
+      return fetchApi<boolean>(`/wish/${wish}`);
     },
     getById: async (id: number): Promise<Wish> => {
       return fetchApi<Wish>(`/wishes/${id}`);
