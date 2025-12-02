@@ -13,13 +13,42 @@ export default function Home() {
   const [priority, setPriority] = useState<'high' | 'medium' | 'low'>('medium');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
+
+  const getCoordinates = async (): Promise<{ latitude: string | null; longitude: string | null }> => {
+    if (typeof navigator === 'undefined' || !navigator.geolocation) {
+      console.warn('Geolocation not supported');
+      setLocationError('Location sharing is not supported in this browser.');
+      return { latitude: null, longitude: null };
+    }
+
+    return new Promise((resolve) => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocationError(null);
+          resolve({
+            latitude: position.coords.latitude.toString(),
+            longitude: position.coords.longitude.toString(),
+          });
+        },
+        (error) => {
+          console.warn('Geolocation error:', error.message);
+          setLocationError('We could not access your location. Your wish will still be submitted.');
+          resolve({ latitude: null, longitude: null });
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    });
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setLocationError(null);
 
     try {
-      await api.wishes.create({ name, title, description, priority });
+      const coords = await getCoordinates();
+      await api.wishes.create({ name, title, description, priority, ...coords });
       setSubmitted(true);
       setName('');
       setTitle('');
@@ -153,6 +182,11 @@ export default function Home() {
                   </Button>
                 </div>
               </form>
+            )}
+            {locationError && (
+              <p className="text-xs text-amber-600 mt-4">
+                {locationError}
+              </p>
             )}
           </div>
         </div>

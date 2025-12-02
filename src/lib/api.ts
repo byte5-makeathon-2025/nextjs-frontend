@@ -24,8 +24,8 @@ async function fetchApi<T>(
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
   const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-      "Accept" : "application/json"
+    'Content-Type': 'application/json',
+    "Accept": "application/json"
   };
 
   if (token) {
@@ -44,6 +44,16 @@ async function fetchApi<T>(
 
   return response.json();
 }
+
+const withRandomCoordinates = (wish: Wish): Wish => {
+  const latitude = (Math.random() * 140 - 70).toFixed(6); // -70 to +70 to avoid poles
+  const longitude = (Math.random() * 360 - 180).toFixed(6);
+  return {
+    ...wish,
+    latitude,
+    longitude,
+  };
+};
 
 export const api = {
   auth: {
@@ -80,22 +90,23 @@ export const api = {
       const response = await fetchApi<any>('/wishes/all');
       // API returns paginated response with data property
       if (response && response.data && Array.isArray(response.data)) {
-        return response.data;
+        return response.data.map(withRandomCoordinates);
       }
-      return Array.isArray(response) ? response : [];
+      return Array.isArray(response) ? response.map(withRandomCoordinates) : [];
     },
 
     getMine: async (): Promise<Wish[]> => {
       const response = await fetchApi<any>('/wishes');
       // API might return paginated response with data property
       if (response && response.data && Array.isArray(response.data)) {
-        return response.data;
+        return response.data.map(withRandomCoordinates);
       }
-      return Array.isArray(response) ? response : [];
+      return Array.isArray(response) ? response.map(withRandomCoordinates) : [];
     },
 
     getById: async (id: number): Promise<Wish> => {
-      return fetchApi<Wish>(`/wishes/${id}`);
+      const wish = await fetchApi<Wish>(`/wishes/${id}`);
+      return withRandomCoordinates(wish);
     },
 
     create: async (data: CreateWishRequest): Promise<Wish> => {
