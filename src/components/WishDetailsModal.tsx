@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { X, Trash2, Save, User, Calendar } from 'lucide-react';
 import type { Wish, Status, Priority } from '@/types';
 import { api } from '@/lib/api';
-import Button from '@/components/ui/Button';
+import {Button} from '@/components/ui/button';
 import IconButton from '@/components/ui/IconButton';
 
 interface WishDetailsModalProps {
