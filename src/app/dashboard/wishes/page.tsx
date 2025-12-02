@@ -30,6 +30,12 @@ const statusConfig = {
   },
 };
 
+const PRIORITY_ORDER: Record<Wish['priority'], number> = {
+  high: 0,
+  medium: 1,
+  low: 2,
+};
+
 export default function WishesPage() {
   const [wishes, setWishes] = useState<Wish[]>([]);
   const [loading, setLoading] = useState(true);
@@ -82,7 +88,10 @@ export default function WishesPage() {
   };
 
   const getWishesByStatus = (status: Status) =>
-    wishes.filter((wish) => wish.status === status);
+    wishes.filter((wish) => wish.status === status)
+  .sort(
+      (a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority]
+    );
 
   const handleDragStart = (wish: Wish) => {
     setDraggedWish(wish);
