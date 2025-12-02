@@ -1,26 +1,44 @@
 import React, { useState, useEffect } from "react";
 import IconButton from "./IconButton";
-import { Loader, Mail } from "lucide-react";
+import { CandyCane, Loader, Mail } from "lucide-react";
 import { SantaIcon } from "../icons/santa";
+import { api } from "@/lib/api";
 
 interface ChatBotProps {
   initialMessages?: string[];
 }
+
+const MOCKED_DATA = [
+  "Hello! How can I help you, my little Elf?",
+  "I'm here to help you with any questions you have about your wish.",
+  "This year you was a very bad boy!!!!",
+];
 
 const ChatBot: React.FC<ChatBotProps> = () => {
   const [messages, setMessages] = useState<{ text: string; isUser: boolean }[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [mockedData, setMockedData] = useState(0);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
   };
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!inputValue.trim()) return;
     setMessages((prev) => [...prev, { text: inputValue, isUser: true }]);
     setInputValue("");
     setIsTyping(true);
+    // Mocked Data
+    // setTimeout(() => {
+    //   setMessages((prev) => [...prev, { text: MOCKED_DATA[mockedData], isUser: false }]);
+    //   setMockedData((prev) => prev + 1);
+    //   setIsTyping(false);
+    // }, 2500);
+    const data = await api.santa.chat(inputValue);
+    console.log(data);
+    setMessages((prev) => [...prev, { text: data, isUser: false }]);
+    setIsTyping(false);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -34,17 +52,9 @@ const ChatBot: React.FC<ChatBotProps> = () => {
     setIsChatOpen(!isChatOpen);
   };
 
-  useEffect(() => {
-    if (isTyping) {
-      setTimeout(() => {
-        setMessages((prev) => [...prev, { text: "Hello!", isUser: false }]);
-        setIsTyping(false);
-      }, 1000);
-    }
-  }, [isTyping]);
   return (
     <div className="fixed bottom-10 right-10">
-      <IconButton onClick={handleToggleChat} variant="primary" icon={<Mail className="w-4 h-4" />}>
+      <IconButton onClick={handleToggleChat} variant="primary" icon={<CandyCane className="w-4 h-4" />}>
         <></>
       </IconButton>
       {isChatOpen && (
@@ -63,10 +73,10 @@ const ChatBot: React.FC<ChatBotProps> = () => {
               value={inputValue}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
-              className="flex-1 border rounded px-2 py-1 mr-2"
+              className="flex-1 border rounded px-2 py-1 mr-2 text-slate-800"
             />
             <IconButton
-              type="submit"
+              onClick={handleSend}
               disabled={isTyping}
               fullWidth
               variant="primary"

@@ -107,4 +107,12 @@ export const api = {
       });
     },
   },
+  santa: {
+    chat: async (message: string): Promise<string> => {
+      return fetchApi<string>("/wishes/chat", {
+        method: "POST",
+        body: JSON.stringify({ prompt: message }),
+      });
+    },
+  },
 };
