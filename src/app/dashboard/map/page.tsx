@@ -1,4 +1,10 @@
-import { Map, MapMarker, MapTileLayer, MapPolyline } from "@/components/ui/map";
+import {
+  Map,
+  MapMarker,
+  MapTileLayer,
+  MapPolyline,
+  MapPopup,
+} from "@/components/ui/map";
 import { icon, type LatLngExpression } from "leaflet";
 
 export default function MapWithMarkers() {
@@ -39,7 +45,9 @@ export default function MapWithMarkers() {
               </div>
             </div>
           }
-        />
+        >
+          <MapPopup className="w-56">{city.name}</MapPopup>
+        </MapMarker>
       ))}
       <MapPolyline positions={POINTS} fillColor="white" />
     </Map>
