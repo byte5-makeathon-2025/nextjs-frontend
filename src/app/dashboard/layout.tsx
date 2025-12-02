@@ -1,23 +1,40 @@
-'use client';
+"use client";
 
-import {ReactNode, useEffect} from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts/AuthContext';
-import { LayoutDashboard, LogOut } from 'lucide-react';
-import Link from 'next/link';
-import IconButton from '@/components/ui/IconButton';
+import { ReactNode, useEffect } from "react";
+import { useParams, usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { LayoutDashboard, LogOut } from "lucide-react";
+import Link from "next/link";
+import IconButton from "@/components/ui/IconButton";
+import { Parastoo } from "next/font/google";
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+const parentsLinks = [
+  {
+    href: "/dashboard/wishes/parents/1",
+    label: "Olha Kabatska",
+    icon: LayoutDashboard,
+  },
+  {
+    href: "/dashboard/wishes/parents/2",
+    label: "John Doe",
+    icon: LayoutDashboard,
+  },
+  {
+    href: "/dashboard/wishes/parents/3",
+    label: "Jane Smith",
+    icon: LayoutDashboard,
+  },
+  // Add more parent links as needed
+];
+export default function DashboardLayout({ children }: { children: ReactNode }) {
   const { user, loading, logout } = useAuth();
+  const pathname = usePathname();
+  console.log("DashboardLayout parent param:", parent, pathname);
   const router = useRouter();
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push('/login');
+      router.push("/login");
     }
   }, [user, loading, router]);
 
@@ -48,11 +65,13 @@ export default function DashboardLayout({
             </div>
             <div className="bg-slate-50 rounded-lg px-3 py-2 border border-slate-200">
               <p className="text-xs text-slate-600 mb-1">Signed in as</p>
-              <p className="text-sm font-semibold text-slate-900 truncate">{user.name}</p>
+              <p className="text-sm font-semibold text-slate-900 truncate">
+                {user.name}
+              </p>
             </div>
           </div>
 
-          <nav className="flex-1 px-3 py-4">
+          <nav className="flex flex-col flex-1 px-3 py-4 gap-1">
             <Link
               href="/dashboard/wishes"
               className="flex items-center gap-3 px-3 py-2.5 text-slate-900 bg-slate-100 rounded-lg font-medium"
@@ -60,6 +79,21 @@ export default function DashboardLayout({
               <LayoutDashboard className="w-5 h-5" />
               <span>Wishes</span>
             </Link>
+            <h2 className="mt-6 mb-2 px-3 text-xs font-semibold text-slate-500 uppercase">
+              Parents
+            </h2>
+            {parentsLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`flex items-center gap-3 px-3 py-2.5 text-slate-900  rounded-lg font-medium ${
+                  pathname === link.href ? "bg-slate-200" : "bg-slate-100"
+                }`}
+              >
+                <link.icon className="w-5 h-5" />
+                <span>{link.label}</span>
+              </Link>
+            ))}
           </nav>
 
           <div className="p-3 border-t border-slate-200">
