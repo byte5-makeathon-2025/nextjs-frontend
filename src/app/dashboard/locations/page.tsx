@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { api } from '@/lib/api';
-import type { Priority, Wish } from '@/types';
+import type { Priority, Status, Wish } from '@/types';
 import LocationsMap from '@/components/LocationsMap';
 
 export type WishLocation = {
@@ -18,6 +18,7 @@ export default function LocationsPage() {
   const [wishes, setWishes] = useState<Wish[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<'all' | Status>('all');
 
   useEffect(() => {
     const loadWishes = async () => {
@@ -35,8 +36,13 @@ export default function LocationsPage() {
     loadWishes();
   }, []);
 
+  const filteredWishes = useMemo(() => {
+    if (statusFilter === 'all') return wishes;
+    return wishes.filter((wish) => wish.status === statusFilter);
+  }, [statusFilter, wishes]);
+
   const wishesWithCoords = useMemo<WishLocation[]>(() => {
-    return wishes
+    return filteredWishes
       .map((wish) => {
         const latitude =
           wish.latitude != null
@@ -65,7 +71,7 @@ export default function LocationsPage() {
         };
       })
       .filter(Boolean) as WishLocation[];
-  }, [wishes]);
+  }, [filteredWishes]);
 
   if (loading) {
     return (
@@ -101,6 +107,23 @@ export default function LocationsPage() {
               Showing {wishesWithCoords.length} wish
               {wishesWithCoords.length === 1 ? '' : 'es'} with coordinates
             </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <label htmlFor="status-filter" className="text-sm text-slate-600">
+              Status
+            </label>
+            <select
+              id="status-filter"
+              className="text-sm border border-slate-200 rounded-lg px-3 py-2 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-300"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value as 'all' | Status)}
+            >
+              <option value="all">All</option>
+              <option value="pending">Pending</option>
+              <option value="in_progress">In progress</option>
+              <option value="granted">Granted</option>
+              <option value="denied">Denied</option>
+            </select>
           </div>
         </div>
 
