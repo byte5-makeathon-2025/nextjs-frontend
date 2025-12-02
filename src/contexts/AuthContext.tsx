@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useRouter } from 'next/navigation';
-import { api } from '@/lib/api';
-import type { User, LoginRequest, RegisterRequest } from '@/types';
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import { api } from "@/lib/api";
+import type { User, LoginRequest, RegisterRequest } from "@/types";
 
 interface AuthContextType {
   user: User | null;
@@ -21,13 +21,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token) {
       api.auth
         .me()
         .then((userData) => setUser(userData))
         .catch(() => {
-          localStorage.removeItem('token');
+          localStorage.removeItem("token");
         })
         .finally(() => setLoading(false));
     } else {
@@ -38,32 +38,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (data: LoginRequest) => {
     const response = await api.auth.login(data);
     setUser(response.user);
-    router.push('/dashboard/wishes');
+    router.push("/dashboard/wishes");
   };
 
   const register = async (data: RegisterRequest) => {
     const response = await api.auth.register(data);
     setUser(response.user);
-    router.push('/dashboard/wishes');
+    router.push("/dashboard/wishes");
   };
 
   const logout = async () => {
     await api.auth.logout();
     setUser(null);
-    router.push('/login');
+    router.push("/login");
   };
 
-  return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{ user, loading, login, register, logout }}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }

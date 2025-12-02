@@ -1,23 +1,19 @@
-'use client';
+"use client";
 
-import {ReactNode, useEffect} from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts/AuthContext';
-import { LayoutDashboard, LogOut } from 'lucide-react';
-import Link from 'next/link';
-import IconButton from '@/components/ui/IconButton';
+import { ReactNode, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { Gift, LayoutDashboard, LogOut } from "lucide-react";
+import Link from "next/link";
+import IconButton from "@/components/ui/IconButton";
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default function DashboardLayout({ children }: { children: ReactNode }) {
   const { user, loading, logout } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push('/login');
+      router.push("/login");
     }
   }, [user, loading, router]);
 
@@ -42,9 +38,7 @@ export default function DashboardLayout({
         <div className="flex flex-col h-full">
           <div className="px-6 py-5 border-b border-slate-200">
             <div className="mb-4">
-              <span className="text-xl font-bold text-slate-900">
-                Santa Logistics
-              </span>
+              <span className="text-xl font-bold text-slate-900">Santa Logistics</span>
             </div>
             <div className="bg-slate-50 rounded-lg px-3 py-2 border border-slate-200">
               <p className="text-xs text-slate-600 mb-1">Signed in as</p>
@@ -52,24 +46,19 @@ export default function DashboardLayout({
             </div>
           </div>
 
-          <nav className="flex-1 px-3 py-4">
-            <Link
-              href="/dashboard/wishes"
-              className="flex items-center gap-3 px-3 py-2.5 text-slate-900 bg-slate-100 rounded-lg font-medium"
-            >
-              <LayoutDashboard className="w-5 h-5" />
+          <nav className="flex-1 px-3 py-4 gap-5 flex flex-col">
+            <Link href="/dashboard/wishes" className="flex items-center gap-3 px-3 py-2.5 text-slate-900 bg-slate-100 rounded-lg font-medium">
+              <Gift className="w-5 h-5" />
               <span>Wishes</span>
+            </Link>
+            <Link href="/dashboard/wish-form" className="flex items-center gap-3 px-3 py-2.5 text-slate-900 bg-slate-100 rounded-lg font-medium">
+              <LayoutDashboard className="w-5 h-5" />
+              <span>Make a wish</span>
             </Link>
           </nav>
 
           <div className="p-3 border-t border-slate-200">
-            <IconButton
-              onClick={logout}
-              variant="ghost"
-              fullWidth
-              icon={<LogOut className="w-5 h-5" />}
-              className="justify-start px-3"
-            >
+            <IconButton onClick={logout} variant="ghost" fullWidth icon={<LogOut className="w-5 h-5" />} className="justify-start px-3">
               Sign Out
             </IconButton>
           </div>

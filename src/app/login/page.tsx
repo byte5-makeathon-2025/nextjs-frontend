@@ -1,27 +1,27 @@
-'use client';
+"use client";
 
-import {FormEvent, useState} from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { LogIn } from 'lucide-react';
-import Link from 'next/link';
-import IconButton from '@/components/ui/IconButton';
+import { FormEvent, useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { LogIn } from "lucide-react";
+import Link from "next/link";
+import IconButton from "@/components/ui/IconButton";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const { login } = useAuth();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
       await login({ email, password });
     } catch (err) {
-      setError('Invalid credentials. Please try again.');
+      setError("Invalid credentials. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -37,11 +37,7 @@ export default function LoginPage() {
 
         <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-8">
           <form onSubmit={handleSubmit} className="space-y-5">
-            {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-                {error}
-              </div>
-            )}
+            {error && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">{error}</div>}
 
             <div>
               <label htmlFor="email" className="block text-sm font-semibold text-slate-900 mb-2">
@@ -73,21 +69,17 @@ export default function LoginPage() {
               />
             </div>
 
-            <IconButton
-              type="submit"
-              disabled={loading}
-              fullWidth
-              variant="primary"
-              icon={<LogIn className="w-4 h-4" />}
-              className="py-3"
-            >
-              {loading ? 'Signing in...' : 'Sign In'}
+            <IconButton type="submit" disabled={loading} fullWidth variant="primary" icon={<LogIn className="w-4 h-4" />} className="py-3">
+              {loading ? "Signing in..." : "Sign In"}
             </IconButton>
           </form>
 
-          <div className="mt-6 text-center">
+          <div className=" text-center flex justify-between px-1 mt-10">
             <Link href="/" className="text-sm text-slate-600 hover:text-slate-900 transition">
               ← Back to Home
+            </Link>
+            <Link href="/register" className="text-sm text-slate-600 hover:text-slate-900 transition">
+              Register
             </Link>
           </div>
         </div>

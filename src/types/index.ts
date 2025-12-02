@@ -1,5 +1,5 @@
-export type Priority = 'high' | 'medium' | 'low';
-export type Status = 'pending' | 'in_progress' | 'granted' | 'denied';
+export type Priority = "high" | "medium" | "low";
+export type Status = "pending" | "in_progress" | "granted" | "denied";
 
 export interface User {
   id: number;
@@ -37,6 +37,8 @@ export interface RegisterRequest {
   email: string;
   password: string;
   password_confirmation: string;
+  gender?: "male" | "female" | "other";
+  age?: number;
 }
 
 export interface CreateWishRequest {
