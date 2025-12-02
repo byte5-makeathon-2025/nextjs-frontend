@@ -1,10 +1,11 @@
 'use client';
 
-import {FormEvent, useState} from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import { CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
+import Snowfall from 'react-snowfall';
 
 export default function Home() {
   const [name, setName] = useState('');
@@ -14,6 +15,23 @@ export default function Home() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
+  const [snowflakeImages, setSnowflakeImages] = useState<HTMLImageElement[]>([]);
+
+  useEffect(() => {
+    const giftImage = document.createElement('img');
+    giftImage.src = 'https://www.pngall.com/wp-content/uploads/2016/07/Birthday-Present-PNG.png';
+
+    const handleLoad = () => setSnowflakeImages([giftImage]);
+    const handleError = () => setSnowflakeImages([]);
+
+    giftImage.addEventListener('load', handleLoad);
+    giftImage.addEventListener('error', handleError);
+
+    return () => {
+      giftImage.removeEventListener('load', handleLoad);
+      giftImage.removeEventListener('error', handleError);
+    };
+  }, []);
 
   const getCoordinates = async (): Promise<{ latitude: string | null; longitude: string | null }> => {
     if (typeof navigator === 'undefined' || !navigator.geolocation) {
@@ -64,6 +82,15 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4 relative">
+      <Snowfall
+        radius={[30.0, 50.0]}
+        images={snowflakeImages}
+        style={{
+          position: 'fixed',
+          width: '100vw',
+          height: '100vh',
+        }}
+      />
       <Link
         href="/login"
         className="absolute top-4 right-4 text-xs text-slate-400 hover:text-slate-600 transition-colors underline"
@@ -74,18 +101,18 @@ export default function Home() {
       <div className="w-full max-w-5xl">
         <div className="grid grid-cols-1 md:grid-cols-2 bg-white shadow-xl min-h-[600px]">
           {/* Left side - decorative card cover */}
-          <div
-            className="bg-gradient-to-br from-slate-50 to-slate-100 p-12 flex items-center justify-center border-r border-slate-200 relative"
-          >
-            <div className="absolute inset-0 bg-white/40"></div>
-            <div className="text-center relative z-10">
-              <div className="text-6xl mb-4">✦</div>
-              <h1 className="text-2xl text-slate-700 font-light">
-                My Wish
-              </h1>
-            </div>
-          </div>
-
+          {/* <div */}
+          {/*   className="bg-gradient-to-br from-slate-50 to-slate-100 p-12 flex items-center justify-center border-r border-slate-200 relative" */}
+          {/* > */}
+          {/*   <div className="absolute inset-0 bg-white/40"></div> */}
+          {/*   <div className="text-center relative z-10"> */}
+          {/*     <div className="text-6xl mb-4">✦</div> */}
+          {/*     <h1 className="text-2xl text-slate-700 font-light"> */}
+          {/*       My Wish */}
+          {/*     </h1> */}
+          {/*   </div> */}
+          {/* </div> */}
+          {/**/}
           {/* Right side - form content */}
           <div className="p-12 flex flex-col justify-center">
             {submitted ? (
