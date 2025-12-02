@@ -117,7 +117,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 				</div>
 			</aside>
 
-			<main className="ml-64 p-8 relative z-10">{children}</main>
+			<main className="ml-64 h-screen p-8 relative z-10">{children}</main>
 		</div>
 	);
 }
