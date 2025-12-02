@@ -72,7 +72,7 @@ export default function Home() {
       setTitle('');
       setDescription('');
       setPriority('medium');
-      setTimeout(() => setSubmitted(false), 3000);
+      setTimeout(() => setSubmitted(false), 10000);
     } catch (error) {
       console.error('Failed to submit wish:', error);
     } finally {
@@ -82,7 +82,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4 relative">
-      <Snowfall
+      {submitted ? <Snowfall
         radius={[30.0, 50.0]}
         images={snowflakeImages}
         style={{
@@ -90,7 +90,17 @@ export default function Home() {
           width: '100vw',
           height: '100vh',
         }}
+      /> : null
+      }
+      <Snowfall
+        radius={[3.0, 5.0]}
+        style={{
+          position: 'fixed',
+          width: '100vw',
+          height: '100vh',
+        }}
       />
+
       <Link
         href="/login"
         className="absolute top-4 right-4 text-xs text-slate-400 hover:text-slate-600 transition-colors underline"
@@ -99,7 +109,7 @@ export default function Home() {
       </Link>
 
       <div className="w-full max-w-5xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 bg-white shadow-xl min-h-[600px]">
+        <div className="grid grid-cols-1 bg-white shadow-xl min-h-[600px]">
           {/* Left side - decorative card cover */}
           {/* <div */}
           {/*   className="bg-gradient-to-br from-slate-50 to-slate-100 p-12 flex items-center justify-center border-r border-slate-200 relative" */}
@@ -123,9 +133,8 @@ export default function Home() {
                 <h2 className="text-2xl text-slate-900 mb-2 font-light">
                   Thank you!
                 </h2>
-                <p className="text-slate-600">
-                  Your wish has been received.
-                </p>
+                <p className="text-slate-600 text-7xl">
+                  Santa is coming!                </p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
