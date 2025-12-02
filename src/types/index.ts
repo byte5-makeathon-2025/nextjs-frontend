@@ -19,8 +19,8 @@ export interface Wish {
   status: Status;
   created_at?: string;
   updated_at?: string;
-  latitude?: string | null;
-  longitude?: string | null;
+  latitude?: string | number | null;
+  longitude?: string | number | null;
   user?: User;
 }
 
@@ -46,8 +46,8 @@ export interface CreateWishRequest {
   title: string;
   description: string;
   priority?: Priority;
-  latitude?: string | null;
-  longitude?: string | null;
+  latitude?: string | number | null;
+  longitude?: string | number | null;
 }
 
 export interface UpdateWishRequest {

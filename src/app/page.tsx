@@ -33,7 +33,7 @@ export default function Home() {
     };
   }, []);
 
-  const getCoordinates = async (): Promise<{ latitude: string | null; longitude: string | null }> => {
+  const getCoordinates = async (): Promise<{ latitude: string | number | null; longitude: string | number | null }> => {
     if (typeof navigator === 'undefined' || !navigator.geolocation) {
       console.warn('Geolocation not supported');
       setLocationError('Location sharing is not supported in this browser.');
@@ -45,8 +45,8 @@ export default function Home() {
         (position) => {
           setLocationError(null);
           resolve({
-            latitude: position.coords.latitude.toString(),
-            longitude: position.coords.longitude.toString(),
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
           });
         },
         (error) => {
