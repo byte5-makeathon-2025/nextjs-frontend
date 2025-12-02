@@ -1,82 +1,94 @@
-'use client';
+"use client";
 
-import {ReactNode, useEffect} from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts/AuthContext';
-import { LayoutDashboard, LogOut } from 'lucide-react';
-import Link from 'next/link';
-import IconButton from '@/components/ui/IconButton';
+import { ReactNode, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { LayoutDashboard, LogOut, Sparkles } from "lucide-react";
+import Link from "next/link";
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  const { user, loading, logout } = useAuth();
-  const router = useRouter();
+export default function DashboardLayout({ children }: { children: ReactNode }) {
+	const { user, loading, logout } = useAuth();
+	const router = useRouter();
 
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push('/login');
-    }
-  }, [user, loading, router]);
+	useEffect(() => {
+		if (!loading && !user) {
+			router.push("/login");
+		}
+	}, [user, loading, router]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-900 mx-auto mb-4"></div>
-          <p className="text-slate-600">Loading...</p>
-        </div>
-      </div>
-    );
-  }
+	if (loading) {
+		return (
+			<div className="min-h-screen flex items-center justify-center bg-[#0c1220]">
+				<div className="text-center">
+					<div className="text-4xl mb-4 animate-bounce">🎅</div>
+					<p className="text-amber-200/70">Loading workshop...</p>
+				</div>
+			</div>
+		);
+	}
 
-  if (!user) {
-    return null;
-  }
+	if (!user) {
+		return null;
+	}
 
-  return (
-    <div className="min-h-screen bg-slate-50">
-      <aside className="fixed inset-y-0 left-0 w-64 bg-white border-r border-slate-200 shadow-sm">
-        <div className="flex flex-col h-full">
-          <div className="px-6 py-5 border-b border-slate-200">
-            <div className="mb-4">
-              <span className="text-xl font-bold text-slate-900">
-                Santa Logistics
-              </span>
-            </div>
-            <div className="bg-slate-50 rounded-lg px-3 py-2 border border-slate-200">
-              <p className="text-xs text-slate-600 mb-1">Signed in as</p>
-              <p className="text-sm font-semibold text-slate-900 truncate">{user.name}</p>
-            </div>
-          </div>
+	return (
+		<div className="min-h-screen bg-[#0c1220]">
+			{/* Background decorations */}
+			<div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_#1a2744_0%,_#0c1220_70%)] pointer-events-none" />
+			<div className="fixed top-0 left-1/4 w-96 h-96 bg-red-900/5 rounded-full blur-3xl pointer-events-none" />
+			<div className="fixed bottom-0 right-1/4 w-96 h-96 bg-emerald-900/5 rounded-full blur-3xl pointer-events-none" />
 
-          <nav className="flex-1 px-3 py-4">
-            <Link
-              href="/dashboard/wishes"
-              className="flex items-center gap-3 px-3 py-2.5 text-slate-900 bg-slate-100 rounded-lg font-medium"
-            >
-              <LayoutDashboard className="w-5 h-5" />
-              <span>Wishes</span>
-            </Link>
-          </nav>
+			<aside className="fixed inset-y-0 left-0 w-64 bg-[#141e30]/90 backdrop-blur-sm border-r border-slate-700/50 shadow-xl z-20">
+				<div className="flex flex-col h-full">
+					<div className="px-6 py-5 border-b border-slate-700/50">
+						<div className="mb-4 flex items-center gap-2">
+							<span className="text-2xl">🎄</span>
+							<div className="relative">
+								<span className="text-lg font-serif text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200">
+									Santa&apos;s Workshop
+								</span>
+								<Sparkles className="absolute -top-1 -right-4 w-3 h-3 text-amber-400 animate-pulse" />
+							</div>
+						</div>
+						<div className="bg-slate-800/50 rounded-lg px-3 py-2 border border-slate-600/30">
+							<p className="text-xs text-slate-400 mb-1">Logged in as</p>
+							<p className="text-sm font-medium text-amber-100 truncate">
+								{user.name}
+							</p>
+						</div>
+					</div>
 
-          <div className="p-3 border-t border-slate-200">
-            <IconButton
-              onClick={logout}
-              variant="ghost"
-              fullWidth
-              icon={<LogOut className="w-5 h-5" />}
-              className="justify-start px-3"
-            >
-              Sign Out
-            </IconButton>
-          </div>
-        </div>
-      </aside>
+					<nav className="flex-1 px-3 py-4">
+						<Link
+							href="/dashboard/wishes"
+							className="flex items-center gap-3 px-3 py-2.5 text-amber-100 bg-red-900/30 border border-red-500/20 rounded-lg font-medium"
+						>
+							<LayoutDashboard className="w-5 h-5 text-red-400" />
+							<span>Wishes</span>
+							<span className="ml-auto text-lg">🎁</span>
+						</Link>
+					</nav>
 
-      <main className="ml-64 p-8">{children}</main>
-    </div>
-  );
+					<div className="p-3 border-t border-slate-700/50">
+						<button
+							onClick={logout}
+							className="flex items-center gap-3 w-full px-3 py-2.5 text-slate-400 hover:text-red-300 hover:bg-slate-800/50 rounded-lg transition"
+						>
+							<LogOut className="w-5 h-5" />
+							<span>Sign Out</span>
+						</button>
+					</div>
+
+					{/* Decorative footer */}
+					<div className="px-6 py-4 text-center">
+						<p className="text-slate-600 text-xs tracking-widest">
+							✦ North Pole HQ ✦
+						</p>
+					</div>
+				</div>
+			</aside>
+
+			<main className="ml-64 p-8 relative z-10">{children}</main>
+		</div>
+	);
 }

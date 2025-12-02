@@ -1,213 +1,236 @@
-'use client';
+"use client";
 
-import { useEffect, useState, DragEvent } from 'react';
-import { api } from '@/lib/api';
-import type { Wish, Status } from '@/types';
-import { Clock, CheckCircle, XCircle, Loader } from 'lucide-react';
-import WishCard from '@/components/WishCard';
-import WishDetailsModal from '@/components/WishDetailsModal';
+import { useEffect, useState, DragEvent } from "react";
+import { api } from "@/lib/api";
+import type { Wish, Status } from "@/types";
+import { Clock, CheckCircle, XCircle, Loader } from "lucide-react";
+import WishCard from "@/components/WishCard";
+import WishDetailsModal from "@/components/WishDetailsModal";
 
 const statusConfig = {
-  pending: {
-    title: 'Pending',
-    icon: Clock,
-    color: 'bg-amber-50 text-amber-900 border-amber-200',
-  },
-  in_progress: {
-    title: 'In Progress',
-    icon: Loader,
-    color: 'bg-blue-50 text-blue-900 border-blue-200',
-  },
-  granted: {
-    title: 'Granted',
-    icon: CheckCircle,
-    color: 'bg-emerald-50 text-emerald-900 border-emerald-200',
-  },
-  denied: {
-    title: 'Denied',
-    icon: XCircle,
-    color: 'bg-slate-100 text-slate-900 border-slate-200',
-  },
+	pending: {
+		title: "Pending",
+		icon: Clock,
+		emoji: "📬",
+		color: "bg-amber-900/30 text-amber-200 border-amber-500/30",
+		dropColor: "bg-amber-900/20 border-amber-500/40",
+	},
+	in_progress: {
+		title: "In Progress",
+		icon: Loader,
+		emoji: "🔨",
+		color: "bg-blue-900/30 text-blue-200 border-blue-500/30",
+		dropColor: "bg-blue-900/20 border-blue-500/40",
+	},
+	granted: {
+		title: "Granted",
+		icon: CheckCircle,
+		emoji: "✨",
+		color: "bg-emerald-900/30 text-emerald-200 border-emerald-500/30",
+		dropColor: "bg-emerald-900/20 border-emerald-500/40",
+	},
+	denied: {
+		title: "Denied",
+		icon: XCircle,
+		emoji: "❄️",
+		color: "bg-slate-700/30 text-slate-300 border-slate-500/30",
+		dropColor: "bg-slate-700/20 border-slate-500/40",
+	},
 };
 
 export default function WishesPage() {
-  const [wishes, setWishes] = useState<Wish[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedWish, setSelectedWish] = useState<Wish | null>(null);
-  const [draggedWish, setDraggedWish] = useState<Wish | null>(null);
-  const [dragOverColumn, setDragOverColumn] = useState<Status | null>(null);
+	const [wishes, setWishes] = useState<Wish[]>([]);
+	const [loading, setLoading] = useState(true);
+	const [selectedWish, setSelectedWish] = useState<Wish | null>(null);
+	const [draggedWish, setDraggedWish] = useState<Wish | null>(null);
+	const [dragOverColumn, setDragOverColumn] = useState<Status | null>(null);
 
-  useEffect(() => {
-    loadWishes();
-  }, []);
+	useEffect(() => {
+		loadWishes();
+	}, []);
 
-  const loadWishes = async () => {
-    try {
-      console.log('Fetching wishes...');
-      const data = await api.wishes.getAll();
-      console.log('Loaded wishes:', data);
-      console.log('Is array?', Array.isArray(data));
-      console.log('Type:', typeof data);
-      setWishes(Array.isArray(data) ? data : []);
-    } catch (error: any) {
-      console.error('Failed to load wishes:', error);
-      console.error('Error details:', error.message, error.status);
-      setWishes([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+	const loadWishes = async () => {
+		try {
+			console.log("Fetching wishes...");
+			const data = await api.wishes.getAll();
+			console.log("Loaded wishes:", data);
+			console.log("Is array?", Array.isArray(data));
+			console.log("Type:", typeof data);
+			setWishes(Array.isArray(data) ? data : []);
+		} catch (error: unknown) {
+			console.error("Failed to load wishes:", error);
+			if (error instanceof Error) {
+				console.error("Error details:", error.message);
+			}
+			setWishes([]);
+		} finally {
+			setLoading(false);
+		}
+	};
 
-  const handleStatusChange = async (wishId: number, newStatus: Status) => {
-    try {
-      await api.wishes.update(wishId, { status: newStatus });
-      setWishes((prev) =>
-        prev.map((wish) =>
-          wish.id === wishId ? { ...wish, status: newStatus } : wish
-        )
-      );
-    } catch (error) {
-      console.error('Failed to update wish status:', error);
-    }
-  };
+	const handleStatusChange = async (wishId: number, newStatus: Status) => {
+		try {
+			await api.wishes.update(wishId, { status: newStatus });
+			setWishes((prev) =>
+				prev.map((wish) =>
+					wish.id === wishId ? { ...wish, status: newStatus } : wish
+				)
+			);
+		} catch (error) {
+			console.error("Failed to update wish status:", error);
+		}
+	};
 
-  const handleWishUpdate = (updatedWish: Wish) => {
-    setWishes((prev) =>
-      prev.map((wish) => (wish.id === updatedWish.id ? updatedWish : wish))
-    );
-  };
+	const handleWishUpdate = (updatedWish: Wish) => {
+		setWishes((prev) =>
+			prev.map((wish) => (wish.id === updatedWish.id ? updatedWish : wish))
+		);
+	};
 
-  const handleWishDelete = (wishId: number) => {
-    setWishes((prev) => prev.filter((wish) => wish.id !== wishId));
-  };
+	const handleWishDelete = (wishId: number) => {
+		setWishes((prev) => prev.filter((wish) => wish.id !== wishId));
+	};
 
-  const getWishesByStatus = (status: Status) =>
-    wishes.filter((wish) => wish.status === status);
+	const getWishesByStatus = (status: Status) =>
+		wishes.filter((wish) => wish.status === status);
 
-  const handleDragStart = (wish: Wish) => {
-    setDraggedWish(wish);
-  };
+	const handleDragStart = (wish: Wish) => {
+		setDraggedWish(wish);
+	};
 
-  const handleDragOver = (e: DragEvent) => {
-    e.preventDefault(); // Allow drop
-  };
+	const handleDragOver = (e: DragEvent) => {
+		e.preventDefault();
+	};
 
-  const handleDragEnter = (status: Status) => {
-    if (draggedWish) {
-      setDragOverColumn(status);
-    }
-  };
+	const handleDragEnter = (status: Status) => {
+		if (draggedWish) {
+			setDragOverColumn(status);
+		}
+	};
 
-  const handleDrop = async (e: DragEvent, newStatus: Status) => {
-    e.preventDefault();
-    setDragOverColumn(null);
+	const handleDrop = async (e: DragEvent, newStatus: Status) => {
+		e.preventDefault();
+		setDragOverColumn(null);
 
-    if (!draggedWish || draggedWish.status === newStatus) {
-      setDraggedWish(null);
-      return;
-    }
+		if (!draggedWish || draggedWish.status === newStatus) {
+			setDraggedWish(null);
+			return;
+		}
 
-    // Optimistically update UI
-    const updatedWish = { ...draggedWish, status: newStatus };
-    setWishes((prev) =>
-      prev.map((wish) => (wish.id === draggedWish.id ? updatedWish : wish))
-    );
-    setDraggedWish(null);
+		const updatedWish = { ...draggedWish, status: newStatus };
+		setWishes((prev) =>
+			prev.map((wish) => (wish.id === draggedWish.id ? updatedWish : wish))
+		);
+		setDraggedWish(null);
 
-    // Update on server
-    try {
-      await api.wishes.update(draggedWish.id, { status: newStatus });
-    } catch (error) {
-      console.error('Failed to update wish status:', error);
-      // Revert on error
-      setWishes((prev) =>
-        prev.map((wish) => (wish.id === draggedWish.id ? draggedWish : wish))
-      );
-    }
-  };
+		try {
+			await api.wishes.update(draggedWish.id, { status: newStatus });
+		} catch (error) {
+			console.error("Failed to update wish status:", error);
+			setWishes((prev) =>
+				prev.map((wish) => (wish.id === draggedWish.id ? draggedWish : wish))
+			);
+		}
+	};
 
-  const handleDragEnd = () => {
-    setDragOverColumn(null);
-    setDraggedWish(null);
-  };
+	const handleDragEnd = () => {
+		setDragOverColumn(null);
+		setDraggedWish(null);
+	};
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-900 mx-auto mb-4"></div>
-          <p className="text-slate-600">Loading wishes...</p>
-        </div>
-      </div>
-    );
-  }
+	if (loading) {
+		return (
+			<div className="flex items-center justify-center h-96">
+				<div className="text-center">
+					<div className="text-4xl mb-4 animate-bounce">🎁</div>
+					<p className="text-amber-200/70">
+						Loading wishes from the mailbag...
+					</p>
+				</div>
+			</div>
+		);
+	}
 
-  return (
-    <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900 mb-2">Wishes</h1>
-        <p className="text-slate-600">
-          Manage and track all submitted wishes
-        </p>
-      </div>
+	return (
+		<div>
+			<div className="mb-8">
+				<div className="flex items-center gap-3 mb-2">
+					<h1 className="text-3xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200">
+						Christmas Wishes
+					</h1>
+					<span className="text-2xl">🎄</span>
+				</div>
+				<p className="text-slate-400 font-light">
+					Manage and track all wishes from around the world
+				</p>
+			</div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-        {(Object.keys(statusConfig) as Status[]).map((status) => {
-          const config = statusConfig[status];
-          const statusWishes = getWishesByStatus(status);
-          const Icon = config.icon;
+			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+				{(Object.keys(statusConfig) as Status[]).map((status) => {
+					const config = statusConfig[status];
+					const statusWishes = getWishesByStatus(status);
+					const Icon = config.icon;
 
-          return (
-            <div key={status} className="flex flex-col">
-              <div className={`rounded-lg border p-4 mb-4 ${config.color}`}>
-                <div className="flex items-center gap-3">
-                  <Icon className="w-5 h-5" />
-                  <h2 className="font-semibold text-sm uppercase tracking-wide">{config.title}</h2>
-                  <span className="ml-auto text-sm font-bold bg-white/60 px-2 py-0.5 rounded">
-                    {statusWishes.length}
-                  </span>
-                </div>
-              </div>
+					return (
+						<div
+							key={status}
+							className="flex flex-col"
+						>
+							<div
+								className={`rounded-lg border p-4 mb-4 backdrop-blur-sm ${config.color}`}
+							>
+								<div className="flex items-center gap-3">
+									<span className="text-lg">{config.emoji}</span>
+									<Icon className="w-4 h-4 opacity-70" />
+									<h2 className="font-medium text-sm uppercase tracking-wide">
+										{config.title}
+									</h2>
+									<span className="ml-auto text-sm font-bold bg-black/20 px-2 py-0.5 rounded">
+										{statusWishes.length}
+									</span>
+								</div>
+							</div>
 
-              <div
-                className={`space-y-3 flex-1 min-h-[200px] rounded-lg transition-all ${
-                  dragOverColumn === status
-                    ? 'bg-slate-100 border-2 border-dashed border-slate-400 p-2'
-                    : 'border-2 border-transparent'
-                }`}
-                onDragOver={handleDragOver}
-                onDragEnter={() => handleDragEnter(status)}
-                onDrop={(e) => handleDrop(e, status)}
-              >
-                {statusWishes.map((wish) => (
-                  <WishCard
-                    key={wish.id}
-                    wish={wish}
-                    onStatusChange={handleStatusChange}
-                    onClick={() => setSelectedWish(wish)}
-                    onDragStart={handleDragStart}
-                    onDragEnd={handleDragEnd}
-                  />
-                ))}
-                {statusWishes.length === 0 && (
-                  <div className="text-center py-8 text-gray-400 text-sm">
-                    Drop wishes here
-                  </div>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
+							<div
+								className={`space-y-3 flex-1 min-h-[200px] rounded-lg transition-all ${
+									dragOverColumn === status
+										? `${config.dropColor} border-2 border-dashed p-2`
+										: "border-2 border-transparent"
+								}`}
+								onDragOver={handleDragOver}
+								onDragEnter={() => handleDragEnter(status)}
+								onDrop={(e) => handleDrop(e, status)}
+							>
+								{statusWishes.map((wish) => (
+									<WishCard
+										key={wish.id}
+										wish={wish}
+										onStatusChange={handleStatusChange}
+										onClick={() => setSelectedWish(wish)}
+										onDragStart={handleDragStart}
+										onDragEnd={handleDragEnd}
+									/>
+								))}
+								{statusWishes.length === 0 && (
+									<div className="text-center py-8 text-slate-500 text-sm">
+										<span className="text-2xl block mb-2">❄️</span>
+										Drop wishes here
+									</div>
+								)}
+							</div>
+						</div>
+					);
+				})}
+			</div>
 
-      {selectedWish && (
-        <WishDetailsModal
-          wish={selectedWish}
-          onClose={() => setSelectedWish(null)}
-          onUpdate={handleWishUpdate}
-          onDelete={handleWishDelete}
-        />
-      )}
-    </div>
-  );
+			{selectedWish && (
+				<WishDetailsModal
+					wish={selectedWish}
+					onClose={() => setSelectedWish(null)}
+					onUpdate={handleWishUpdate}
+					onDelete={handleWishDelete}
+				/>
+			)}
+		</div>
+	);
 }
