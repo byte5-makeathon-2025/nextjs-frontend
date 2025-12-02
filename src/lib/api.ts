@@ -101,10 +101,11 @@ export const api = {
     },
 
     create: async (data: CreateWishRequest): Promise<Wish> => {
-      return fetchApi<Wish>('/wishes', {
+      const response = await fetchApi<{ message: string; wish: Wish }>('/wishes', {
         method: 'POST',
         body: JSON.stringify(data),
       });
+      return response.wish;
     },
 
     update: async (id: number, data: UpdateWishRequest): Promise<Wish> => {
@@ -126,6 +127,13 @@ export const api = {
 
     track: async (id: number): Promise<WishTrackingInfo> => {
       return fetchApi<WishTrackingInfo>(`/wishes/${id}/track`);
+    },
+
+    submitBribe: async (id: number, offer: string): Promise<{ message: string; bribe_status: string }> => {
+      return fetchApi<{ message: string; bribe_status: string }>(`/wishes/${id}/bribe`, {
+        method: 'POST',
+        body: JSON.stringify({ offer }),
+      });
     },
   },
 };
