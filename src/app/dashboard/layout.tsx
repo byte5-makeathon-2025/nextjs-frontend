@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Gift, LayoutDashboard, LogOut } from "lucide-react";
 import Link from "next/link";
 import IconButton from "@/components/ui/IconButton";
+import ChatBot from "@/components/ui/ChatBot";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const { user, loading, logout } = useAuth();
@@ -48,11 +49,17 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           </div>
 
           <nav className="flex-1 px-3 py-4 gap-5 flex flex-col">
-            <Link href="/dashboard/wishes" className="flex items-center gap-3 px-3 py-2.5 text-slate-900 bg-slate-100 rounded-lg font-medium">
+            <Link
+              href="/dashboard/wishes"
+              className="flex items-center transition-colors duration-500 gap-3 px-3 py-2.5 text-slate-900 hover:bg-slate-100 rounded-lg font-medium"
+            >
               <Gift className="w-5 h-5" />
               <span>Wishes</span>
             </Link>
-            <Link href="/dashboard/wish-form" className="flex items-center gap-3 px-3 py-2.5 text-slate-900 bg-slate-100 rounded-lg font-medium">
+            <Link
+              href="/dashboard/wish-form"
+              className="flex items-center transition-colors duration-500 gap-3 px-3 py-2.5 text-slate-900 hover:bg-slate-100 rounded-lg font-medium"
+            >
               <LayoutDashboard className="w-5 h-5" />
               <span>Make a wish</span>
             </Link>
@@ -67,6 +74,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       </aside>
 
       <main className="ml-64 p-8">{children}</main>
+      <ChatBot />
     </div>
   );
 }

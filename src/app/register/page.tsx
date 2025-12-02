@@ -35,11 +35,11 @@ export default function RegisterPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Welcome Back</h1>
-          <p className="text-slate-600">Sign in to access the dashboard</p>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">Welcome!!</h1>
+          <p className="text-slate-600">Please register to access the dashboard</p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-8">
+        <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-8 mb-10">
           <form onSubmit={handleSubmit} className="space-y-5">
             {error && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">{error}</div>}
 
