@@ -62,7 +62,7 @@ export default function LoginPage() {
 						<span className="text-5xl">🎅</span>
 						<Sparkles className="absolute -top-1 -right-3 w-5 h-5 text-amber-400 animate-pulse" />
 					</div>
-					<h1 className="text-3xl text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 font-serif mb-2">
+					<h1 className="text-3xl text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 mb-2">
 						Welcome Back
 					</h1>
 					<p className="text-slate-400 font-light">
