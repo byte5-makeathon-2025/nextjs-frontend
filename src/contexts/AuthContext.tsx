@@ -21,18 +21,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      api.auth
-        .me()
-        .then((userData) => setUser(userData))
-        .catch(() => {
-          localStorage.removeItem("token");
-        })
-        .finally(() => setLoading(false));
-    } else {
-      setLoading(false);
-    }
+    const initAuth = async () => {
+      const token = localStorage.getItem("token");
+      console.log("Token on load:", token ? "exists" : "missing");
+
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const { user: userData } = await api.auth.me();
+        console.log("UserData", userData);
+        console.log("User fetched successfully:", userData);
+        setUser(userData);
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
+        localStorage.removeItem("token");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initAuth();
   }, []);
 
   const login = async (data: LoginRequest) => {

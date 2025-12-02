@@ -9,9 +9,13 @@ export default function HomePage() {
           <p className="text-slate-600">Submit your wish to the wish manager</p>
         </div>
 
-        <div className="text-center">
+        <div className="text-center flex flex-col gap-10">
           <Link href="/dashboard/wish-form" className="px-6 py-3 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition">
             Make a Wish
+          </Link>
+
+          <Link href="/register" className="px-6 py-3 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition">
+            ...or Register
           </Link>
         </div>
       </div>

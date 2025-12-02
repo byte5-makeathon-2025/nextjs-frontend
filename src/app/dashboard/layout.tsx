@@ -15,6 +15,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     if (!loading && !user) {
       router.push("/login");
     }
+    console.log(" User:", user);
   }, [user, loading, router]);
 
   if (loading) {
@@ -42,7 +43,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             </div>
             <div className="bg-slate-50 rounded-lg px-3 py-2 border border-slate-200">
               <p className="text-xs text-slate-600 mb-1">Signed in as</p>
-              <p className="text-sm font-semibold text-slate-900 truncate">{user.name}</p>
+              <p className="text-sm font-semibold text-slate-900 truncate">{user?.name || "Nasty elf"}</p>
             </div>
           </div>
 

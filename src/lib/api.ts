@@ -59,8 +59,8 @@ export const api = {
       localStorage.removeItem("token");
     },
 
-    me: async (): Promise<User> => {
-      return fetchApi<User>("/me");
+    me: async (): Promise<{ user: User }> => {
+      return fetchApi<{ user: User }>("/me");
     },
   },
 
