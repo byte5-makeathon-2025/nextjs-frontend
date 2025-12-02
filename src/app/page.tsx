@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import { AddressAutocomplete } from '@/components/AddressAutocomplete';
 import { ProductSearch } from '@/components/ProductSearch';
+import { WishAnimation } from '@/components/WishAnimation';
 import { calculateAirDistance, formatCO2, NORTH_POLE, SLEIGH_CO2_PER_KM, CARGO_CO2_PER_KG_KM } from '@/components/WishesMap';
 import type { Address, Product } from '@/types';
 
@@ -105,18 +106,7 @@ export default function Home() {
 
       <div className="w-full max-w-5xl">
         <div className="grid grid-cols-1 md:grid-cols-2 bg-white shadow-xl min-h-[600px]">
-          {/* Left side - decorative card cover */}
-          <div
-            className="bg-gradient-to-br from-slate-50 to-slate-100 p-12 flex items-center justify-center border-r border-slate-200 relative"
-          >
-            <div className="absolute inset-0 bg-white/40"></div>
-            <div className="text-center relative z-10">
-              <div className="text-6xl mb-4">✦</div>
-              <h1 className="text-2xl text-slate-700 font-light">
-                My Wish
-              </h1>
-            </div>
-          </div>
+          <WishAnimation name={name} address={address} product={selectedProduct} />
 
           {/* Right side - form content */}
           <div className="p-12 flex flex-col justify-center">

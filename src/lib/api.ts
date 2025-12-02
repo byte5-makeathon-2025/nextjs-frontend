@@ -10,7 +10,7 @@ import type {
   WishTrackingInfo,
 } from '@/types';
 
-const API_BASE_URL = 'https://santa.test/api';
+const API_BASE_URL = 'https://byte5-makeathon-backend-feature-moses-famnvk.laravel.cloud/api';
 
 class ApiError extends Error {
   constructor(public status: number, message: string) {

@@ -3,7 +3,7 @@
 import {ReactNode, useEffect} from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { LayoutDashboard, LogOut, ShoppingCart, Cookie } from 'lucide-react';
+import { LayoutDashboard, LogOut, ShoppingCart, BarChart3, Cookie } from 'lucide-react';
 import Link from 'next/link';
 import IconButton from '@/components/ui/IconButton';
 
@@ -73,6 +73,13 @@ export default function DashboardLayout({
             >
               <Cookie className="w-5 h-5" />
               <span>Bribe Offers</span>
+            </Link>
+            <Link
+              href="/dashboard/stats"
+              className="flex items-center gap-3 px-3 py-2.5 text-slate-700 hover:bg-slate-100 rounded-lg font-medium transition-colors"
+            >
+              <BarChart3 className="w-5 h-5" />
+              <span>Stats</span>
             </Link>
           </nav>
 
