@@ -8,7 +8,7 @@ import type {
   User,
 } from '@/types';
 
-const API_BASE_URL = 'https://byte5-makeathon-backend-main-9dpixy.laravel.cloud/api';
+const API_BASE_URL = 'https://byte5-makeathon-backend-shen-dn7qdj.laravel.cloud/api';
 
 class ApiError extends Error {
   constructor(public status: number, message: string) {
@@ -45,15 +45,15 @@ async function fetchApi<T>(
   return response.json();
 }
 
-const withRandomCoordinates = (wish: Wish): Wish => {
-  const latitude = (Math.random() * 140 - 70).toFixed(6); // -70 to +70 to avoid poles
-  const longitude = (Math.random() * 360 - 180).toFixed(6);
-  return {
-    ...wish,
-    latitude,
-    longitude,
-  };
-};
+// const withRandomCoordinates = (wish: Wish): Wish => {
+//   const latitude = (Math.random() * 140 - 70).toFixed(6); // -70 to +70 to avoid poles
+//   const longitude = (Math.random() * 360 - 180).toFixed(6);
+//   return {
+//     ...wish,
+//     latitude,
+//     longitude,
+//   };
+// };
 
 export const api = {
   auth: {
@@ -90,23 +90,23 @@ export const api = {
       const response = await fetchApi<any>('/wishes/all');
       // API returns paginated response with data property
       if (response && response.data && Array.isArray(response.data)) {
-        return response.data.map(withRandomCoordinates);
+        return response.data
       }
-      return Array.isArray(response) ? response.map(withRandomCoordinates) : [];
+      return Array.isArray(response) ? response : [];
     },
 
     getMine: async (): Promise<Wish[]> => {
       const response = await fetchApi<any>('/wishes');
       // API might return paginated response with data property
       if (response && response.data && Array.isArray(response.data)) {
-        return response.data.map(withRandomCoordinates);
+        return response.data
       }
-      return Array.isArray(response) ? response.map(withRandomCoordinates) : [];
+      return Array.isArray(response) ? response : [];
     },
 
     getById: async (id: number): Promise<Wish> => {
       const wish = await fetchApi<Wish>(`/wishes/${id}`);
-      return withRandomCoordinates(wish);
+      return wish
     },
 
     create: async (data: CreateWishRequest): Promise<Wish> => {
