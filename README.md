@@ -1,7 +1,7 @@
 # Wish Manager - Makeathon Boilerplate
 
 A modern, clean Next.js application for managing wishes with a Kanban board interface.
-
+Test TEst
 
 ## Project Structure
 
