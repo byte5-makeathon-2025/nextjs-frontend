@@ -8,6 +8,7 @@ import type { Product } from '@/types';
 interface ProductSearchProps {
   onProductSelect: (product: Product | null) => void;
   selectedProduct: Product | null;
+  defaultQuery?: string;
 }
 
 interface DummyJSONProduct {
@@ -25,8 +26,8 @@ interface DummyJSONResponse {
   total: number;
 }
 
-export function ProductSearch({ onProductSelect, selectedProduct }: ProductSearchProps) {
-  const [query, setQuery] = useState('');
+export function ProductSearch({ onProductSelect, selectedProduct, defaultQuery = '' }: ProductSearchProps) {
+  const [query, setQuery] = useState(defaultQuery);
   const [results, setResults] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);

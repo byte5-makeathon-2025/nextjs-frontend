@@ -1,37 +1,69 @@
-'use client';
+"use client";
 
-import { FormEvent, useState, useCallback, useEffect } from 'react';
-import { api } from '@/lib/api';
-import { CheckCircle, Leaf, Plane, Package, Copy, Check } from 'lucide-react';
-import Link from 'next/link';
-import Button from '@/components/ui/Button';
-import { AddressAutocomplete } from '@/components/AddressAutocomplete';
-import { ProductSearch } from '@/components/ProductSearch';
-import { WishAnimation } from '@/components/WishAnimation';
-import { calculateAirDistance, formatCO2, NORTH_POLE, SLEIGH_CO2_PER_KM, CARGO_CO2_PER_KG_KM } from '@/components/WishesMap';
-import type { Address, Product } from '@/types';
+import { FormEvent, useState, useCallback, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { api } from "@/lib/api";
+import {
+  CheckCircle,
+  Leaf,
+  Plane,
+  Package,
+  Copy,
+  Check,
+  Sparkles,
+} from "lucide-react";
+import Link from "next/link";
+import Button from "@/components/ui/Button";
+import { AddressAutocomplete } from "@/components/AddressAutocomplete";
+import { ProductSearch } from "@/components/ProductSearch";
+import { WishAnimation } from "@/components/WishAnimation";
+import {
+  calculateAirDistance,
+  formatCO2,
+  NORTH_POLE,
+  SLEIGH_CO2_PER_KM,
+  CARGO_CO2_PER_KG_KM,
+} from "@/components/WishesMap";
+import type { Address, Product } from "@/types";
 
 export default function Home() {
-  const [name, setName] = useState('');
+  const searchParams = useSearchParams();
+  const [name, setName] = useState("");
   const [address, setAddress] = useState<Address | null>(null);
-  const [addressCoords, setAddressCoords] = useState<{ lat: number; lng: number } | null>(null);
-  const [co2Info, setCo2Info] = useState<{ distance: number; baseCo2: number; cargoCo2: number; totalCo2: number } | null>(null);
-  const [title, setTitle] = useState('');
+  const [addressCoords, setAddressCoords] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
+  const [co2Info, setCo2Info] = useState<{
+    distance: number;
+    baseCo2: number;
+    cargoCo2: number;
+    totalCo2: number;
+  } | null>(null);
+  const [title, setTitle] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [priority, setPriority] = useState<'high' | 'medium' | 'low'>('medium');
+  const [priority, setPriority] = useState<"high" | "medium" | "low">("medium");
   const [submitted, setSubmitted] = useState(false);
   const [submittedWishId, setSubmittedWishId] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // Pre-fill form from gift-finder results
+  useEffect(() => {
+    const giftName = searchParams?.get("gift");
+    if (giftName) {
+      setTitle(giftName);
+    }
+  }, [searchParams]);
+
   const handleAddressSelect = useCallback((selectedAddress: Address) => {
     setAddress(selectedAddress);
     // Geocode the address to get coordinates
-    if (typeof google !== 'undefined') {
+    if (typeof google !== "undefined") {
       const geocoder = new google.maps.Geocoder();
       const addressString = `${selectedAddress.street} ${selectedAddress.house_number}, ${selectedAddress.postal_code} ${selectedAddress.city}, ${selectedAddress.country}`;
       geocoder.geocode({ address: addressString }, (results, status) => {
-        if (status === 'OK' && results && results[0]) {
+        if (status === "OK" && results && results[0]) {
           const location = results[0].geometry.location;
           const coords = { lat: location.lat(), lng: location.lng() };
           setAddressCoords(coords);
@@ -43,7 +75,12 @@ export default function Home() {
   // Calculate CO2 when coordinates and product are available
   useEffect(() => {
     if (addressCoords) {
-      const distance = calculateAirDistance(NORTH_POLE.lat, NORTH_POLE.lng, addressCoords.lat, addressCoords.lng);
+      const distance = calculateAirDistance(
+        NORTH_POLE.lat,
+        NORTH_POLE.lng,
+        addressCoords.lat,
+        addressCoords.lng
+      );
       const weightKg = selectedProduct?.weight ?? 0;
       const baseCo2 = distance * SLEIGH_CO2_PER_KM;
       const cargoCo2 = weightKg * distance * CARGO_CO2_PER_KG_KM;
@@ -81,15 +118,15 @@ export default function Home() {
       });
       setSubmittedWishId(createdWish.id);
       setSubmitted(true);
-      setName('');
+      setName("");
       setAddress(null);
       setAddressCoords(null);
       setCo2Info(null);
-      setTitle('');
+      setTitle("");
       setSelectedProduct(null);
-      setPriority('medium');
+      setPriority("medium");
     } catch (error) {
-      console.error('Failed to submit wish:', error);
+      console.error("Failed to submit wish:", error);
     } finally {
       setLoading(false);
     }
@@ -106,7 +143,11 @@ export default function Home() {
 
       <div className="w-full max-w-5xl">
         <div className="grid grid-cols-1 md:grid-cols-2 bg-white shadow-xl min-h-[600px]">
-          <WishAnimation name={name} address={address} product={selectedProduct} />
+          <WishAnimation
+            name={name}
+            address={address}
+            product={selectedProduct}
+          />
 
           {/* Right side - form content */}
           <div className="p-12 flex flex-col justify-center">
@@ -132,7 +173,9 @@ export default function Home() {
                         href={`/track/${submittedWishId}`}
                         className="flex-1 text-sm text-emerald-600 hover:text-emerald-700 underline truncate"
                       >
-                        {typeof window !== 'undefined' ? `${window.location.origin}/track/${submittedWishId}` : `/track/${submittedWishId}`}
+                        {typeof window !== "undefined"
+                          ? `${window.location.origin}/track/${submittedWishId}`
+                          : `/track/${submittedWishId}`}
                       </Link>
                       <button
                         type="button"
@@ -145,7 +188,11 @@ export default function Home() {
                         className="p-2 text-slate-400 hover:text-slate-600 transition-colors"
                         title="Copy link"
                       >
-                        {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+                        {copied ? (
+                          <Check className="w-4 h-4 text-emerald-600" />
+                        ) : (
+                          <Copy className="w-4 h-4" />
+                        )}
                       </button>
                     </div>
                   </div>
@@ -165,8 +212,31 @@ export default function Home() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Gift Finder Link */}
+                {!title && (
+                  <Link
+                    href="/gift-finder"
+                    className="block mb-6 p-4 bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-lg hover:from-purple-100 hover:to-pink-100 transition-all group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Sparkles className="w-5 h-5 text-purple-600 group-hover:animate-pulse" />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-purple-900">
+                          Not sure what to wish for?
+                        </p>
+                        <p className="text-xs text-purple-600">
+                          Take our fun quiz to find your perfect gift!
+                        </p>
+                      </div>
+                    </div>
+                  </Link>
+                )}
+
                 <div>
-                  <label htmlFor="name" className="block text-sm text-slate-600 mb-2">
+                  <label
+                    htmlFor="name"
+                    className="block text-sm text-slate-600 mb-2"
+                  >
                     Your name
                   </label>
                   <input
@@ -187,7 +257,8 @@ export default function Home() {
                   <AddressAutocomplete onAddressSelect={handleAddressSelect} />
                   {address && (
                     <div className="mt-2 text-sm text-slate-500">
-                      {address.street} {address.house_number}, {address.postal_code} {address.city}, {address.country}
+                      {address.street} {address.house_number},{" "}
+                      {address.postal_code} {address.city}, {address.country}
                     </div>
                   )}
                   {co2Info && (
@@ -198,12 +269,20 @@ export default function Home() {
                       </div>
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
-                          <div className="text-slate-500">Distance from North Pole</div>
-                          <div className="text-slate-900 font-semibold">{Math.round(co2Info.distance).toLocaleString()} km</div>
+                          <div className="text-slate-500">
+                            Distance from North Pole
+                          </div>
+                          <div className="text-slate-900 font-semibold">
+                            {Math.round(co2Info.distance).toLocaleString()} km
+                          </div>
                         </div>
                         <div>
-                          <div className="text-slate-500">Total CO₂ Emissions</div>
-                          <div className="text-emerald-600 font-semibold">{formatCO2(co2Info.totalCo2)}</div>
+                          <div className="text-slate-500">
+                            Total CO₂ Emissions
+                          </div>
+                          <div className="text-emerald-600 font-semibold">
+                            {formatCO2(co2Info.totalCo2)}
+                          </div>
                         </div>
                       </div>
                       {selectedProduct?.weight && (
@@ -213,21 +292,36 @@ export default function Home() {
                               <Package className="w-3 h-3" />
                               Base Sleigh Emissions
                             </div>
-                            <div className="text-slate-700">{formatCO2(co2Info.baseCo2)}</div>
+                            <div className="text-slate-700">
+                              {formatCO2(co2Info.baseCo2)}
+                            </div>
                           </div>
                           <div>
                             <div className="text-slate-500 flex items-center gap-1">
                               <Package className="w-3 h-3" />
-                              Cargo Weight ({selectedProduct.weight.toFixed(2)} kg)
+                              Cargo Weight ({selectedProduct.weight.toFixed(
+                                2
+                              )}{" "}
+                              kg)
                             </div>
-                            <div className="text-slate-700">+{formatCO2(co2Info.cargoCo2)}</div>
+                            <div className="text-slate-700">
+                              +{formatCO2(co2Info.cargoCo2)}
+                            </div>
                           </div>
                         </div>
                       )}
                       <div className="mt-3 pt-3 border-t border-emerald-100 text-xs text-slate-500 flex items-center gap-1">
                         <Plane className="w-3 h-3" />
                         <span>
-                          Equivalent plane trip would emit {formatCO2(co2Info.distance * 0.255)} — Santa&apos;s sleigh saves {Math.round((1 - co2Info.totalCo2 / (co2Info.distance * 0.255)) * 100)}% CO₂!
+                          Equivalent plane trip would emit{" "}
+                          {formatCO2(co2Info.distance * 0.255)} — Santa&apos;s
+                          sleigh saves{" "}
+                          {Math.round(
+                            (1 -
+                              co2Info.totalCo2 / (co2Info.distance * 0.255)) *
+                              100
+                          )}
+                          % CO₂!
                         </span>
                       </div>
                     </div>
@@ -235,7 +329,10 @@ export default function Home() {
                 </div>
 
                 <div>
-                  <label htmlFor="title" className="block text-sm text-slate-600 mb-2">
+                  <label
+                    htmlFor="title"
+                    className="block text-sm text-slate-600 mb-2"
+                  >
                     I wish for
                   </label>
                   <input
@@ -256,6 +353,7 @@ export default function Home() {
                   <ProductSearch
                     onProductSelect={setSelectedProduct}
                     selectedProduct={selectedProduct}
+                    defaultQuery={title || ""}
                   />
                 </div>
 
@@ -264,8 +362,11 @@ export default function Home() {
                     Priority
                   </label>
                   <div className="flex gap-4">
-                    {(['low', 'medium', 'high'] as const).map((p) => (
-                      <label key={p} className="flex items-center gap-2 cursor-pointer">
+                    {(["low", "medium", "high"] as const).map((p) => (
+                      <label
+                        key={p}
+                        className="flex items-center gap-2 cursor-pointer"
+                      >
                         <input
                           type="radio"
                           name="priority"
@@ -290,7 +391,7 @@ export default function Home() {
                     variant="primary"
                     className="py-3"
                   >
-                    {loading ? 'Sending...' : 'Submit Wish'}
+                    {loading ? "Sending..." : "Submit Wish"}
                   </Button>
                 </div>
               </form>

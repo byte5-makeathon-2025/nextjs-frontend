@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import type { Address, Product } from '@/types';
+import { useEffect, useState } from "react";
+import type { Address, Product } from "@/types";
 
 interface WishAnimationProps {
   name: string;
@@ -10,14 +10,14 @@ interface WishAnimationProps {
 }
 
 export function WishAnimation({ name, address, product }: WishAnimationProps) {
-  const [gifUrl, setGifUrl] = useState<string>('');
+  const [gifUrl, setGifUrl] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (name && address && product) {
       fetchGif();
     } else {
-      setGifUrl('');
+      setGifUrl("");
     }
   }, [name, address, product]);
 
@@ -29,7 +29,7 @@ export function WishAnimation({ name, address, product }: WishAnimationProps) {
     try {
       // Extract keywords from product name for better matching
       const productName = product.name.toLowerCase();
-      const location = address.city || address.country || '';
+      const location = address.city || address.country || "";
 
       // Create multiple search strategies for better variety and personalization
       const searchQueries = [
@@ -37,19 +37,22 @@ export function WishAnimation({ name, address, product }: WishAnimationProps) {
         `${productName} child joy`,
         `${productName} excited kid`,
         `happy ${productName} celebration`,
-        `kid with ${productName}`
+        `kid with ${productName}`,
       ];
 
       // Try multiple queries to get better variety
       let allResults: any[] = [];
 
       // Use Tenor API (Google's GIF platform) - has much larger variety than Giphy
-      const apiKey = 'AIzaSyAyimkuYQYF_FXVALexPuGQctUWRURdCYQ'; // Public demo key
+      const apiKey = "AIzaSyAyimkuYQYF_FXVALexPuGQctUWRURdCYQ"; // Public demo key
 
       for (const query of searchQueries) {
         try {
+          console.log("Query:", query);
           const response = await fetch(
-            `https://tenor.googleapis.com/v2/search?q=${encodeURIComponent(query)}&key=${apiKey}&client_key=wish_app&limit=20&contentfilter=high&media_filter=gif`
+            `https://tenor.googleapis.com/v2/search?q=${encodeURIComponent(
+              query
+            )}&key=${apiKey}&client_key=wish_app&limit=20&contentfilter=high&media_filter=gif`
           );
 
           const data = await response.json();
@@ -58,32 +61,38 @@ export function WishAnimation({ name, address, product }: WishAnimationProps) {
             allResults = [...allResults, ...data.results];
           }
         } catch (err) {
-          console.log('Query failed, trying next:', query);
+          console.log("Query failed, trying next:", query);
         }
       }
 
       // Remove duplicates and pick a random one
-      const uniqueResults = Array.from(new Set(allResults.map(r => r.id)))
-        .map(id => allResults.find(r => r.id === id))
+      const uniqueResults = Array.from(new Set(allResults.map((r) => r.id)))
+        .map((id) => allResults.find((r) => r.id === id))
         .filter(Boolean);
 
       if (uniqueResults.length > 0) {
-        const randomIndex = Math.floor(Math.random() * Math.min(uniqueResults.length, 30));
+        const randomIndex = Math.floor(
+          Math.random() * Math.min(uniqueResults.length, 30)
+        );
         const gifData = uniqueResults[randomIndex];
         setGifUrl(gifData.media_formats.gif.url);
       } else {
         // Fallback to generic Christmas wish animations
         const fallbackResponse = await fetch(
-          `https://tenor.googleapis.com/v2/search?q=${encodeURIComponent('christmas wish child happy present')}&key=${apiKey}&client_key=wish_app&limit=20&contentfilter=high&media_filter=gif`
+          `https://tenor.googleapis.com/v2/search?q=${encodeURIComponent(
+            "christmas wish child happy present"
+          )}&key=${apiKey}&client_key=wish_app&limit=20&contentfilter=high&media_filter=gif`
         );
         const fallbackData = await fallbackResponse.json();
         if (fallbackData.results && fallbackData.results.length > 0) {
-          const randomIndex = Math.floor(Math.random() * fallbackData.results.length);
+          const randomIndex = Math.floor(
+            Math.random() * fallbackData.results.length
+          );
           setGifUrl(fallbackData.results[randomIndex].media_formats.gif.url);
         }
       }
     } catch (error) {
-      console.error('Failed to fetch GIF:', error);
+      console.error("Failed to fetch GIF:", error);
     } finally {
       setIsLoading(false);
     }
@@ -95,9 +104,7 @@ export function WishAnimation({ name, address, product }: WishAnimationProps) {
         <div className="absolute inset-0 bg-white/40"></div>
         <div className="text-center relative z-10">
           <div className="text-6xl mb-4 animate-pulse">✦</div>
-          <h1 className="text-2xl text-slate-700 font-light">
-            My Wish
-          </h1>
+          <h1 className="text-2xl text-slate-700 font-light">My Wish</h1>
           <p className="text-sm text-slate-500 mt-2">
             Fill in your details to see your wish come to life
           </p>
@@ -114,7 +121,6 @@ export function WishAnimation({ name, address, product }: WishAnimationProps) {
         <div className="absolute inset-0 flex items-center justify-center z-20">
           <div className="text-center">
             <div className="animate-spin text-6xl mb-4">✦</div>
-            <p className="text-slate-600">Finding the perfect animation...</p>
           </div>
         </div>
       )}
@@ -124,7 +130,6 @@ export function WishAnimation({ name, address, product }: WishAnimationProps) {
           <div className="relative w-full h-full max-w-md max-h-[500px] animate-fadeIn">
             <img
               src={gifUrl}
-              alt={`${name}'s wish visualization`}
               className="w-full h-full object-cover rounded-lg shadow-2xl"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/20 to-transparent rounded-lg"></div>
