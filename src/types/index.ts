@@ -1,5 +1,6 @@
-export type Priority = 'high' | 'medium' | 'low';
-export type Status = 'pending' | 'in_progress' | 'granted' | 'denied';
+export type Priority = "high" | "medium" | "low";
+export type Status = "pending" | "in_progress" | "granted" | "denied" | "paid";
+export type StatusWithParent = "paid" | "granted";
 
 export interface User {
   id: number;

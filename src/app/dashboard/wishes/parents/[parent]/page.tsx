@@ -2,7 +2,7 @@
 
 import { useEffect, useState, DragEvent } from "react";
 import { api } from "@/lib/api";
-import type { Wish, Status } from "@/types";
+import type { Wish, Status, StatusWithParent } from "@/types";
 import { CheckCircle } from "lucide-react";
 import WishCard from "@/components/WishCard";
 import WishDetailsModal from "@/components/WishDetailsModal";
@@ -45,6 +45,7 @@ export default function WishesPage() {
       console.log("Is array?", Array.isArray(data));
       console.log("Type:", typeof data);
       setWishes(Array.isArray(data) ? data : []);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Failed to load wishes:", error);
       console.error("Error details:", error.message, error.status);
@@ -148,7 +149,7 @@ export default function WishesPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5 max-w-3xl">
-        {(Object.keys(statusConfig) as Status[]).map((status) => {
+        {(Object.keys(statusConfig) as StatusWithParent[]).map((status) => {
           const config = statusConfig[status];
           const statusWishes = getWishesByStatus(status);
           const Icon = config.icon;

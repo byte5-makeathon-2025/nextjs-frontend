@@ -1,12 +1,11 @@
 "use client";
 
 import { ReactNode, useEffect } from "react";
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { LayoutDashboard, LogOut } from "lucide-react";
 import Link from "next/link";
 import IconButton from "@/components/ui/IconButton";
-import { Parastoo } from "next/font/google";
 
 const parentsLinks = [
   {
@@ -29,7 +28,7 @@ const parentsLinks = [
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const { user, loading, logout } = useAuth();
   const pathname = usePathname();
-  console.log("DashboardLayout parent param:", parent, pathname);
+  console.log("DashboardLayout pathname:", pathname);
   const router = useRouter();
 
   useEffect(() => {

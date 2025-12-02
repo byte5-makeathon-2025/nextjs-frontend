@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { X, Trash2, Save, User, Calendar } from 'lucide-react';
-import type { Wish, Status, Priority } from '@/types';
-import { api } from '@/lib/api';
-import Button from '@/components/ui/Button';
-import IconButton from '@/components/ui/IconButton';
+import { useState } from "react";
+import { X, Trash2, Save, User, Calendar } from "lucide-react";
+import type { Wish, Status, Priority } from "@/types";
+import { api } from "@/lib/api";
+import Button from "@/components/ui/Button";
+import IconButton from "@/components/ui/IconButton";
 
 interface WishDetailsModalProps {
   wish: Wish;
@@ -13,16 +13,17 @@ interface WishDetailsModalProps {
 }
 
 const priorityColors = {
-  high: 'bg-rose-100 text-rose-900 border-rose-300',
-  medium: 'bg-amber-100 text-amber-900 border-amber-300',
-  low: 'bg-slate-100 text-slate-700 border-slate-300',
+  high: "bg-rose-100 text-rose-900 border-rose-300",
+  medium: "bg-amber-100 text-amber-900 border-amber-300",
+  low: "bg-slate-100 text-slate-700 border-slate-300",
 };
 
 const statusColors = {
-  pending: 'bg-amber-50 text-amber-900 border-amber-200',
-  in_progress: 'bg-blue-50 text-blue-900 border-blue-200',
-  granted: 'bg-emerald-50 text-emerald-900 border-emerald-200',
-  denied: 'bg-slate-100 text-slate-900 border-slate-200',
+  pending: "bg-amber-50 text-amber-900 border-amber-200",
+  in_progress: "bg-blue-50 text-blue-900 border-blue-200",
+  paid: "bg-purple-50 text-purple-900 border-purple-200",
+  granted: "bg-emerald-50 text-emerald-900 border-emerald-200",
+  denied: "bg-slate-100 text-slate-900 border-slate-200",
 };
 
 export default function WishDetailsModal({
@@ -51,7 +52,7 @@ export default function WishDetailsModal({
       onUpdate(updated);
       setEditing(false);
     } catch (error) {
-      console.error('Failed to update wish:', error);
+      console.error("Failed to update wish:", error);
     } finally {
       setLoading(false);
     }
@@ -69,7 +70,7 @@ export default function WishDetailsModal({
       onDelete(wish.id);
       onClose();
     } catch (error) {
-      console.error('Failed to delete wish:', error);
+      console.error("Failed to delete wish:", error);
     } finally {
       setLoading(false);
     }
@@ -173,7 +174,7 @@ export default function WishDetailsModal({
                     statusColors[wish.status]
                   }`}
                 >
-                  Status: {wish.status.replace('_', ' ')}
+                  Status: {wish.status.replace("_", " ")}
                 </div>
               </div>
 
@@ -212,7 +213,7 @@ export default function WishDetailsModal({
                   icon={<Save className="w-4 h-4" />}
                   className="flex-1"
                 >
-                  {loading ? 'Saving...' : 'Save Changes'}
+                  {loading ? "Saving..." : "Save Changes"}
                 </IconButton>
                 <Button
                   onClick={() => {
@@ -240,11 +241,11 @@ export default function WishDetailsModal({
                 <IconButton
                   onClick={handleDelete}
                   disabled={loading}
-                  variant={deleteConfirm ? 'danger' : 'secondary'}
+                  variant={deleteConfirm ? "danger" : "secondary"}
                   icon={<Trash2 className="w-4 h-4" />}
                   className="px-4"
                 >
-                  {deleteConfirm ? 'Confirm' : 'Delete'}
+                  {deleteConfirm ? "Confirm" : "Delete"}
                 </IconButton>
               </>
             )}

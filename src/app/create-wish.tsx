@@ -83,7 +83,7 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 bg-white shadow-xl min-h-[600px]">
           {/* Left side - decorative card cover */}
           <div
-            className={`bg-gradient-to-br  p-12 flex items-center justify-center border-r border-slate-200 relative ${
+            className={`bg-linear-to-br  p-12 flex items-center justify-center border-r border-slate-200 relative ${
               allowed ? "from-slate-50 to-slate-100" : "from-red-200 to-red-300"
             }`}
           >
