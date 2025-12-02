@@ -15,7 +15,7 @@ const MOCKED_DATA = [
 ];
 
 const ChatBot: React.FC<ChatBotProps> = () => {
-  const [messages, setMessages] = useState<{ text: string; isUser: boolean }[]>([]);
+  const [messages, setMessages] = useState<{ text: string; isUser: boolean; error: boolean }[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -26,7 +26,7 @@ const ChatBot: React.FC<ChatBotProps> = () => {
   };
   const handleSend = async () => {
     if (!inputValue.trim()) return;
-    setMessages((prev) => [...prev, { text: inputValue, isUser: true }]);
+    setMessages((prev) => [...prev, { text: inputValue, isUser: true, error: false }]);
     setInputValue("");
     setIsTyping(true);
     // Mocked Data
@@ -35,10 +35,14 @@ const ChatBot: React.FC<ChatBotProps> = () => {
     //   setMockedData((prev) => prev + 1);
     //   setIsTyping(false);
     // }, 2500);
-    const data = await api.santa.chat(inputValue);
-    console.log(data);
-    setMessages((prev) => [...prev, { text: data, isUser: false }]);
-    setIsTyping(false);
+    try {
+      const data = await api.santa.chat(inputValue);
+      setMessages((prev) => [...prev, { text: data, isUser: false, error: false }]);
+      setIsTyping(false);
+    } catch {
+      setMessages((prev) => [...prev, { text: "Santa is very bussy packing your gifts.", isUser: false, error: true }]);
+      setIsTyping(false);
+    }
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -62,7 +66,10 @@ const ChatBot: React.FC<ChatBotProps> = () => {
           <SantaIcon className="absolute w-30 top-0 right-1/2 translate-x-1/2 -translate-y-1/2" />
           <div className="h-80 overflow-y-auto mb-4 mt-20 p-5">
             {messages.map((message, index) => (
-              <div key={index} className={`${message.isUser ? "text-right text-slate-800" : "text-left text-slate-600"}`}>
+              <div
+                key={index}
+                className={`${message.error ? "text-red-800" : message.isUser ? "text-right text-slate-800" : "text-left text-slate-600"}`}
+              >
                 {message.text}
               </div>
             ))}
