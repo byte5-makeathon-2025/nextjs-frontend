@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import IconButton from "./IconButton";
 import { CandyCane, Loader, Mail } from "lucide-react";
 import { SantaIcon } from "../icons/santa";
-import { api } from "@/lib/api";
+// import { api } from "@/lib/api";
 
 interface ChatBotProps {
   initialMessages?: string[];
@@ -30,19 +30,24 @@ const ChatBot: React.FC<ChatBotProps> = () => {
     setInputValue("");
     setIsTyping(true);
     // Mocked Data
-    // setTimeout(() => {
-    //   setMessages((prev) => [...prev, { text: MOCKED_DATA[mockedData], isUser: false }]);
-    //   setMockedData((prev) => prev + 1);
+    setTimeout(() => {
+      if (mockedData >= MOCKED_DATA.length) {
+        setMessages((prev) => [...prev, { text: "Santa is very bussy packing your gifts.", isUser: false, error: true }]);
+        setIsTyping(false);
+        return;
+      }
+      setMessages((prev) => [...prev, { text: MOCKED_DATA[mockedData], isUser: false, error: false }]);
+      setMockedData((prev) => prev + 1);
+      setIsTyping(false);
+    }, 2500);
+    // try {
+    //   const data = await api.santa.chat(inputValue);
+    //   setMessages((prev) => [...prev, { text: data, isUser: false, error: false }]);
     //   setIsTyping(false);
-    // }, 2500);
-    try {
-      const data = await api.santa.chat(inputValue);
-      setMessages((prev) => [...prev, { text: data, isUser: false, error: false }]);
-      setIsTyping(false);
-    } catch {
-      setMessages((prev) => [...prev, { text: "Santa is very bussy packing your gifts.", isUser: false, error: true }]);
-      setIsTyping(false);
-    }
+    // } catch {
+    //   setMessages((prev) => [...prev, { text: "Santa is very bussy packing your gifts.", isUser: false, error: true }]);
+    //   setIsTyping(false);
+    // }
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
