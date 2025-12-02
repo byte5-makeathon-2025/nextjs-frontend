@@ -2,17 +2,10 @@
 
 import { useEffect, useMemo } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import type { Wish } from '@/types';
+import type { Priority } from '@/types';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-
-type LocationWish = {
-  id: number;
-  title: string;
-  latitude: number;
-  longitude: number;
-  name?: string;
-};
+import { WishLocation } from '@/app/dashboard/locations/page';
 
 function FitBounds({ positions }: { positions: [number, number][] }) {
   const map = useMap();
@@ -26,18 +19,34 @@ function FitBounds({ positions }: { positions: [number, number][] }) {
   return null;
 }
 
-export default function LocationsMap({ wishes }: { wishes: LocationWish[] }) {
+export default function LocationsMap({ wishes }: { wishes: WishLocation[] }) {
   const positions = useMemo(
     () => wishes.map((wish) => [wish.latitude, wish.longitude] as [number, number]),
     [wishes]
   );
 
-  useEffect(() => {
-    L.Icon.Default.mergeOptions({
-      iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-      iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-    });
+  const priorityIcons = useMemo(() => {
+    const createIcon = (color: string) =>
+      L.divIcon({
+        className: 'priority-marker',
+        html: `<div style="
+          background:${color};
+          width:18px;
+          height:18px;
+          border-radius:9999px;
+          border:2px solid white;
+          box-shadow:0 2px 4px rgba(15,23,42,0.25);
+        "></div>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9],
+        popupAnchor: [0, -10],
+      });
+
+    return {
+      high: createIcon('#ef4444'),
+      medium: createIcon('#facc15'),
+      low: createIcon('#22c55e'),
+    } as Record<Priority, L.DivIcon>;
   }, []);
 
   return (
@@ -49,7 +58,11 @@ export default function LocationsMap({ wishes }: { wishes: LocationWish[] }) {
       />
       {positions.length > 0 && <FitBounds positions={positions} />}
       {wishes.map((wish) => (
-        <Marker key={wish.id} position={[wish.latitude, wish.longitude]}>
+        <Marker
+          key={wish.id}
+          position={[wish.latitude, wish.longitude]}
+          icon={priorityIcons[wish.priority ?? 'medium']}
+        >
           <Popup>
             <div className="space-y-1">
               <div className="font-semibold text-slate-900">{wish.title}</div>

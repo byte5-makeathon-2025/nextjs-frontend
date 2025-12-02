@@ -2,16 +2,16 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { api } from '@/lib/api';
-import type { Wish } from '@/types';
+import type { Priority, Wish } from '@/types';
 import LocationsMap from '@/components/LocationsMap';
 
-
-type WishLocation = {
+export type WishLocation = {
   id: number;
   title: string;
   latitude: number;
   longitude: number;
   name?: string;
+  priority: Priority;
 };
 
 export default function LocationsPage() {
@@ -61,6 +61,7 @@ export default function LocationsPage() {
           latitude,
           longitude,
           name: wish.name,
+          priority: wish.priority
         };
       })
       .filter(Boolean) as WishLocation[];
