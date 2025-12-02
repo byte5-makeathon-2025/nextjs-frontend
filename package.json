@@ -11,6 +11,9 @@
     "generate-services": "curl https://santa.test/docs -o ./docs.json && openapi --input ./docs.json --output ./src/api/generated --client axios --useOptions"
   },
   "dependencies": {
+    "@react-google-maps/api": "^2.20.7",
+    "@types/lodash": "^4.17.21",
+    "lodash": "^4.17.21",
     "lucide-react": "^0.555.0",
     "next": "16.0.4",
     "openapi-typescript-codegen": "^0.29.0",

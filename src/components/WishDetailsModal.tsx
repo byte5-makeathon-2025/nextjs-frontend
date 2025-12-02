@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Trash2, Save, User, Calendar } from 'lucide-react';
+import { X, Trash2, Save, User, Calendar, MapPin, Package, DollarSign } from 'lucide-react';
 import type { Wish, Status, Priority } from '@/types';
 import { api } from '@/lib/api';
 import Button from '@/components/ui/Button';
@@ -36,6 +36,11 @@ export default function WishDetailsModal({
   const [description, setDescription] = useState(wish.description);
   const [priority, setPriority] = useState<Priority>(wish.priority);
   const [status, setStatus] = useState<Status>(wish.status);
+  const [street, setStreet] = useState(wish.street || '');
+  const [houseNumber, setHouseNumber] = useState(wish.house_number || '');
+  const [postalCode, setPostalCode] = useState(wish.postal_code || '');
+  const [city, setCity] = useState(wish.city || '');
+  const [country, setCountry] = useState(wish.country || '');
   const [loading, setLoading] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
 
@@ -47,6 +52,11 @@ export default function WishDetailsModal({
         description,
         priority,
         status,
+        street,
+        house_number: houseNumber,
+        postal_code: postalCode,
+        city,
+        country,
       });
       onUpdate(updated);
       setEditing(false);
@@ -147,6 +157,49 @@ export default function WishDetailsModal({
                   </select>
                 </div>
               </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-slate-900 mb-2">
+                  Address
+                </label>
+                <div className="grid grid-cols-2 gap-4">
+                  <input
+                    type="text"
+                    value={street}
+                    onChange={(e) => setStreet(e.target.value)}
+                    placeholder="Street"
+                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-slate-900 outline-none"
+                  />
+                  <input
+                    type="text"
+                    value={houseNumber}
+                    onChange={(e) => setHouseNumber(e.target.value)}
+                    placeholder="House Number"
+                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-slate-900 outline-none"
+                  />
+                  <input
+                    type="text"
+                    value={postalCode}
+                    onChange={(e) => setPostalCode(e.target.value)}
+                    placeholder="Postal Code"
+                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-slate-900 outline-none"
+                  />
+                  <input
+                    type="text"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    placeholder="City"
+                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-slate-900 outline-none"
+                  />
+                  <input
+                    type="text"
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                    placeholder="Country"
+                    className="col-span-2 w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-slate-900 outline-none"
+                  />
+                </div>
+              </div>
             </>
           ) : (
             <>
@@ -154,10 +207,49 @@ export default function WishDetailsModal({
                 <h3 className="text-2xl font-semibold text-gray-900 mb-2">
                   {wish.title}
                 </h3>
-                <p className="text-gray-600 whitespace-pre-wrap">
-                  {wish.description}
-                </p>
+                {wish.description && (
+                  <p className="text-gray-600 whitespace-pre-wrap">
+                    {wish.description}
+                  </p>
+                )}
               </div>
+
+              {wish.product_name && (
+                <div className="bg-slate-50 rounded-lg p-4">
+                  <h4 className="text-sm font-semibold text-slate-700 mb-3">Product Details</h4>
+                  <div className="flex gap-4">
+                    {wish.product_image && (
+                      <img
+                        src={wish.product_image}
+                        alt={wish.product_name}
+                        className="w-24 h-24 object-contain rounded-lg bg-white border border-slate-200"
+                      />
+                    )}
+                    <div className="flex-1">
+                      <p className="text-sm text-slate-900 font-medium mb-2">{wish.product_name}</p>
+                      <div className="flex flex-wrap gap-3 text-sm">
+                        {wish.product_price && (
+                          <div className="flex items-center gap-1 text-emerald-600">
+                            <DollarSign className="w-4 h-4" />
+                            <span className="font-semibold">${Number(wish.product_price).toFixed(2)}</span>
+                          </div>
+                        )}
+                        {wish.product_weight && (
+                          <div className="flex items-center gap-1 text-slate-600">
+                            <Package className="w-4 h-4" />
+                            <span>{Number(wish.product_weight).toFixed(2)} kg</span>
+                          </div>
+                        )}
+                        {wish.product_sku && (
+                          <div className="text-slate-500">
+                            SKU: {wish.product_sku}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div className="flex flex-wrap gap-3">
                 <div
@@ -194,6 +286,20 @@ export default function WishDetailsModal({
                 </div>
               )}
 
+              {wish.street && (
+                <div className="bg-gray-50 rounded-lg p-4 space-y-2">
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <MapPin className="w-4 h-4" />
+                    <span className="font-medium">Address:</span>
+                  </div>
+                  <div className="text-sm text-gray-700 ml-6">
+                    {wish.street} {wish.house_number}<br />
+                    {wish.postal_code} {wish.city}<br />
+                    {wish.country}
+                  </div>
+                </div>
+              )}
+
               {wish.created_at && (
                 <div className="text-xs text-gray-500">
                   Created: {new Date(wish.created_at).toLocaleString()}
@@ -221,6 +327,11 @@ export default function WishDetailsModal({
                     setDescription(wish.description);
                     setPriority(wish.priority);
                     setStatus(wish.status);
+                    setStreet(wish.street || '');
+                    setHouseNumber(wish.house_number || '');
+                    setPostalCode(wish.postal_code || '');
+                    setCity(wish.city || '');
+                    setCountry(wish.country || '');
                   }}
                   variant="secondary"
                   className="px-6"

@@ -3,9 +3,10 @@
 import { useEffect, useState, DragEvent } from 'react';
 import { api } from '@/lib/api';
 import type { Wish, Status } from '@/types';
-import { Clock, CheckCircle, XCircle, Loader } from 'lucide-react';
+import { Clock, CheckCircle, XCircle, Loader, Map, LayoutGrid } from 'lucide-react';
 import WishCard from '@/components/WishCard';
 import WishDetailsModal from '@/components/WishDetailsModal';
+import WishesMap from '@/components/WishesMap';
 
 const statusConfig = {
   pending: {
@@ -30,12 +31,15 @@ const statusConfig = {
   },
 };
 
+type ViewMode = 'board' | 'map';
+
 export default function WishesPage() {
   const [wishes, setWishes] = useState<Wish[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedWish, setSelectedWish] = useState<Wish | null>(null);
   const [draggedWish, setDraggedWish] = useState<Wish | null>(null);
   const [dragOverColumn, setDragOverColumn] = useState<Status | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>('board');
 
   useEffect(() => {
     loadWishes();
@@ -144,13 +148,49 @@ export default function WishesPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900 mb-2">Wishes</h1>
-        <p className="text-slate-600">
-          Manage and track all submitted wishes
-        </p>
+      <div className="mb-8 flex items-start justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-900 mb-2">Wishes</h1>
+          <p className="text-slate-600">
+            Manage and track all submitted wishes
+          </p>
+        </div>
+        <div className="flex bg-slate-100 rounded-lg p-1">
+          <button
+            onClick={() => setViewMode('board')}
+            className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition ${
+              viewMode === 'board'
+                ? 'bg-white text-slate-900 shadow-sm'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <LayoutGrid className="w-4 h-4" />
+            Board
+          </button>
+          <button
+            onClick={() => setViewMode('map')}
+            className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition ${
+              viewMode === 'map'
+                ? 'bg-white text-slate-900 shadow-sm'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <Map className="w-4 h-4" />
+            Map
+          </button>
+        </div>
       </div>
 
+      {viewMode === 'map' && (
+        <div className="mb-8">
+          <WishesMap
+            wishes={wishes.filter((wish) => wish.status === 'granted')}
+            onWishClick={(wish) => setSelectedWish(wish)}
+          />
+        </div>
+      )}
+
+      {viewMode === 'board' && (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
         {(Object.keys(statusConfig) as Status[]).map((status) => {
           const config = statusConfig[status];
@@ -199,6 +239,7 @@ export default function WishesPage() {
           );
         })}
       </div>
+      )}
 
       {selectedWish && (
         <WishDetailsModal

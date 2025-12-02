@@ -6,9 +6,11 @@ import type {
   CreateWishRequest,
   UpdateWishRequest,
   User,
+  ShoppingListResponse,
+  WishTrackingInfo,
 } from '@/types';
 
-const API_BASE_URL = 'https://byte5-makeathon-backend-feature-santas-aodo4y.laravel.cloud/api';
+const API_BASE_URL = 'https://santa.test/api';
 
 class ApiError extends Error {
   constructor(public status: number, message: string) {
@@ -116,6 +118,14 @@ export const api = {
       return fetchApi<void>(`/wishes/${id}`, {
         method: 'DELETE',
       });
+    },
+
+    getShoppingList: async (): Promise<ShoppingListResponse> => {
+      return fetchApi<ShoppingListResponse>('/wishes/shopping-list');
+    },
+
+    track: async (id: number): Promise<WishTrackingInfo> => {
+      return fetchApi<WishTrackingInfo>(`/wishes/${id}/track`);
     },
   },
 };

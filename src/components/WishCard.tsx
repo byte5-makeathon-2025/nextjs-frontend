@@ -1,5 +1,5 @@
 import type { Wish, Status } from '@/types';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, MapPin, Package } from 'lucide-react';
 import { useState, MouseEvent } from 'react';
 
 interface WishCardProps {
@@ -59,9 +59,32 @@ export default function WishCard({ wish, onStatusChange, onClick, onDragStart, o
         </span>
       </div>
 
-      <p className="text-sm text-slate-600 line-clamp-3 mb-3">
-        {wish.description}
-      </p>
+      {wish.product_name && (
+        <div className="flex gap-2 mb-3">
+          {wish.product_image && (
+            <img
+              src={wish.product_image}
+              alt={wish.product_name}
+              className="w-12 h-12 object-contain rounded bg-slate-50 flex-shrink-0"
+            />
+          )}
+          <div className="flex-1 min-w-0">
+            <p className="text-xs text-slate-600 line-clamp-2">{wish.product_name}</p>
+            {wish.product_weight && (
+              <div className="flex items-center gap-1 text-xs text-slate-500 mt-1">
+                <Package className="w-3 h-3" />
+                <span>{Number(wish.product_weight).toFixed(2)} kg</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {wish.description && (
+        <p className="text-sm text-slate-600 line-clamp-3 mb-3">
+          {wish.description}
+        </p>
+      )}
 
       {(wish.user || wish.name) && (
         <div className="text-xs text-slate-500 mb-3 flex items-center gap-1">
@@ -71,6 +94,13 @@ export default function WishCard({ wish, onStatusChange, onClick, onDragStart, o
             </span>
           </div>
           {wish.user?.name || wish.name}
+        </div>
+      )}
+
+      {wish.city && (
+        <div className="text-xs text-slate-500 mb-3 flex items-center gap-1">
+          <MapPin className="w-3 h-3" />
+          {wish.city}{wish.country ? `, ${wish.country}` : ''}
         </div>
       )}
 
