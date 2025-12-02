@@ -127,11 +127,23 @@ export interface ShoppingListResponse {
   total_weight: number;
 }
 
+export type BribeStatus = 'pending' | 'accepted' | 'rejected';
+
 export interface WishTrackingInfo {
   id: number;
   title: string;
   status: Status;
   product_name: string;
   product_image: string | null;
+  product_weight: number | null;
+  street: string;
+  house_number: string;
+  postal_code: string;
+  city: string;
+  country: string;
   created_at: string;
+  queue_position: number | null;
+  total_in_queue: number | null;
+  bribe_offer: string | null;
+  bribe_status: BribeStatus | null;
 }
