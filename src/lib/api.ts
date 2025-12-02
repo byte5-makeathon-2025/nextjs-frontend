@@ -8,7 +8,7 @@ import type {
   User,
 } from '@/types';
 
-const API_BASE_URL = 'https://byte5-makeathon-backend-main-9dpixy.laravel.cloud/api';
+const API_BASE_URL = 'https://byte5-makeathon-backend-feature-santas-aodo4y.laravel.cloud/api';
 
 class ApiError extends Error {
   constructor(public status: number, message: string) {
