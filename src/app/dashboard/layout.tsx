@@ -1,14 +1,15 @@
 "use client";
 
 import { ReactNode, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
-import { LayoutDashboard, LogOut, Sparkles } from "lucide-react";
+import { LayoutDashboard, LogOut, MapPin, Sparkles } from "lucide-react";
 import Link from "next/link";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
 	const { user, loading, logout } = useAuth();
 	const router = useRouter();
+	const pathname = usePathname();
 
 	useEffect(() => {
 		if (!loading && !user) {
@@ -58,14 +59,42 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 						</div>
 					</div>
 
-					<nav className="flex-1 px-3 py-4">
+					<nav className="flex-1 px-3 py-4 space-y-2">
 						<Link
 							href="/dashboard/wishes"
-							className="flex items-center gap-3 px-3 py-2.5 text-amber-100 bg-red-900/30 border border-red-500/20 rounded-lg font-medium"
+							className={`flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition ${
+								pathname === "/dashboard/wishes"
+									? "text-amber-100 bg-red-900/30 border border-red-500/20"
+									: "text-slate-300 hover:text-amber-100 hover:bg-slate-800/50 border border-transparent hover:border-slate-600/30"
+							}`}
 						>
-							<LayoutDashboard className="w-5 h-5 text-red-400" />
+							<LayoutDashboard
+								className={`w-5 h-5 ${
+									pathname === "/dashboard/wishes"
+										? "text-red-400"
+										: "text-slate-500"
+								}`}
+							/>
 							<span>Wishes</span>
 							<span className="ml-auto text-lg">🎁</span>
+						</Link>
+						<Link
+							href="/dashboard/map"
+							className={`flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition ${
+								pathname === "/dashboard/map"
+									? "text-amber-100 bg-emerald-900/30 border border-emerald-500/20"
+									: "text-slate-300 hover:text-amber-100 hover:bg-slate-800/50 border border-transparent hover:border-slate-600/30"
+							}`}
+						>
+							<MapPin
+								className={`w-5 h-5 ${
+									pathname === "/dashboard/map"
+										? "text-emerald-400"
+										: "text-slate-500"
+								}`}
+							/>
+							<span>Map</span>
+							<span className="ml-auto text-lg">🗺️</span>
 						</Link>
 					</nav>
 
